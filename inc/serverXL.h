@@ -23,7 +23,7 @@
 // feature test macro requirements
 
 #define _GNU_SOURCE
-#define _USE_BSD
+#define _BSD_SOURCE
 #define _XOPEN_SOURCE 700
 #define _XOPEN_SOURCE_EXTENDED
 
@@ -42,7 +42,7 @@
 #ifndef __getopt_h
 #include <getopt.h>
 #endif
-#ifndef __dirnet_h
+#ifndef __dirent_h
 #include <dirent.h>
 #endif
 #ifndef __errno_h
@@ -78,8 +78,12 @@
 #ifndef __sys_types_h
 #include <sys/types.h>
 #endif
+#ifndef __unistd_h
+#include <unistd.h>
+#endif
 
 #if defined(_WIN32) || defined(__WIN32__)
+#define _WIN32_WINNT 0x0501
 #ifndef __winsock2_h
 #include <winsock2.h>
 #endif
@@ -89,11 +93,14 @@
 #ifndef __windows_h
 #include <windows.h>
 #endif
+//#ifndef __tchar_h
+//#include <tchar.h>
+//#endif
 #define SIGNAL(SIG, HANDLER) \
     signal((SIG), (HANDLER));
 #if defined(_MSC_VER)
-#define popen  _popen
-#define pclose _pclose
+#define popen(x, y)  _popen(x, y)
+#define pclose(x)    _pclose(x)
 #endif
 
 #else
@@ -103,9 +110,6 @@
 #ifndef __sys_socket_h
 #include <sys/socket.h>
 #endif
-#ifndef __unistd_h
-#include <unistd.h>
-#endif
 #define SIGNAL(SIG, HANDLER)     \
     struct sigaction act;        \
     act.sa_handler = (HANDLER);  \
@@ -113,14 +117,6 @@
     sigemptyset(&act.sa_mask);   \
     sigaction((SIG), &act, NULL);
 #endif
-
-// types
-typedef unsigned char BYTE;
-
-// global variables
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
 
 // prototypes
 
@@ -171,7 +167,7 @@ void list(const char* path);
  * Loads a file into memory dynamically allocated on heap.
  * Stores address thereof in *content and length thereof in *length.
  */
-bool load(FILE* file, BYTE** content, size_t* length);
+bool load(FILE* file, char** content, size_t* length);
 
 /**
  * Returns MIME type for supported extensions, else NULL.
@@ -231,3 +227,84 @@ void transfer(const char* path, const char* type);
 char* urldecode(const char* s);
 
 #endif
+
+#if defined(_WIN32) || defined(__WIN32__)
+
+// Header for dprintf() and vdprintf()
+
+#ifndef __dprintf_h
+#define __dprintf_h
+
+#ifdef __STDC__
+#ifndef __stdarg_h
+#include <stdarg.h>
+#endif
+#else
+#ifndef __varargs_h
+#include <varargs.h>
+#endif
+#endif
+/*#ifndef __libioP_h 
+#include <libioP.h>
+#endif*/
+
+int dprintf (int d, const char *format, ...);
+int vdprintf (int d, const char *format, va_list ap);
+
+/*libc_hidden_def (__dprintf)
+ldbl_hidden_def (__dprintf, dprintf)
+ldbl_weak_alias (__dprintf, dprintf)
+*/
+#endif
+
+// Header for realpath()
+
+#ifndef __realpath_h
+#define __realpath_h
+
+char *realpath(const char *path, char resolved_path[MAX_PATH]);
+
+#endif
+
+// Header for scandir()
+
+#ifndef __scandir_h
+#define __scadir_h
+
+#ifndef __assert_h
+#include <assert.h>
+#endif
+
+
+int alphasort(const struct dirent **a, const struct dirent **b);
+int antialphasort2(const struct dirent **a, const struct dirent **b);
+/**
+ * @brief scan a directory, returning relevant files
+ * @param path[in] the directory to search
+ * @param e[out] an array of dirents returned
+ * @param filter[in] a predicate to determine if a dirent should be returned
+ * @param compare[in] a function to determine the order of the return values
+ * @return
+ *   the number of files returned if successful, or a negative number on error
+ */
+int scandir(const char *path, struct dirent ***e,
+        int (*filter)(const struct dirent *),
+        int (*compare)(const struct dirent **, const struct dirent **));
+/**
+ * @brief scan a directory, returning relevant files. List scandir2, but
+ *   filters using the full path of the file
+ * @param path[in] the directory to search
+ * @param e[out] an array of dirents returned
+ * @param filter[in] a predicate to determine if a dirent should be returned,
+ *   by the full path name of the file
+ * @param compare[in] a function to determine the order of the return values
+ * @return
+ *   the number of files returned if successful, or a negative number on error
+ */
+int scandir_full_path(const char *path, struct dirent ***e,
+        int (*filter)(const char *),
+        int (*compare)(const struct dirent **, const struct dirent **));
+
+#endif
+
+#endif // win32 support

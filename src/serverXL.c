@@ -18,7 +18,13 @@
 // serverXL.c
 
 // include header
-#include "serverXL.h"
+#include <serverXL.h>
+
+// global variables
+
+extern char* root;
+extern int cfd, sfd;
+extern bool signaled;
 
 /**
  * Checks (without blocking) whether a client has connected to server. 
@@ -372,7 +378,7 @@ void list(const char* path)
  * Loads a file into memory dynamically allocated on heap.
  * Stores address thereof in *content and length thereof in *length.
  */
-bool load(FILE* file, BYTE** content, size_t* length)
+bool load(FILE* file, char** content, size_t* length)
 {
     *length = 0;
     *content = NULL;
@@ -383,15 +389,15 @@ bool load(FILE* file, BYTE** content, size_t* length)
     }
     if (*length != 0)
     {
-        *content = (BYTE *)malloc(*length * sizeof(BYTE));
-        fread(*content, sizeof(BYTE), *length, file);
+        *content = (char *)malloc(*length * sizeof(char));
+        fread(*content, sizeof(char), *length, file);
     }
     else
     {
         char c;
         while((c = fgetc(file)) != EOF)
         {
-            BYTE *buffer = (BYTE *)malloc((*length + 1) * sizeof(BYTE));
+            char *buffer = (char *)malloc((*length + 1) * sizeof(char));
             memcpy(buffer, *content, *length);
             free(*content);
             *(buffer + *length) = c;
@@ -575,7 +581,7 @@ bool request(char** message, size_t* length)
     while (*length < LimitRequestLine + LimitRequestFields * LimitRequestFieldSize + 4)
     {
         // read from socket
-        BYTE buffer[BYTES];
+        char buffer[BYTES];
         ssize_t bytes = read(cfd, buffer, BYTES);
         if (bytes < 0)
         {
@@ -756,7 +762,7 @@ void start(short port, const char* path)
     }
 
     // allow reuse of address (to avoid "Address already in use")
-    int optval = 1;
+    char optval = 1;
     setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 
     // assign name to socket
@@ -841,7 +847,7 @@ void transfer(const char* path, const char* type)
     }
 
     // load file's content
-    BYTE* content;
+    char* content;
     size_t length;
     if (load(file, &content, &length) == false)
     {

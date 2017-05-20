@@ -18,7 +18,7 @@
 // serverX.c
 
 // include header
-#include "serverXL.h"
+#include <serverXL.h>
 
 // server's root
 char* root = NULL;

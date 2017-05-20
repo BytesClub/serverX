@@ -18,7 +18,10 @@
 CC = gcc
 
 # Flags for Compiler
-CFLAGS = -ggdb3 -O0 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow 
+CFLAGS = -ggdb3 -O0 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow -U__STRICT_ANSI__ 
+
+# Flags for Linker
+LFLAGS = -lm 
 
 # Flags for Directories
 DIR = -I$(INC)
@@ -27,17 +30,30 @@ DIR = -I$(INC)
 EXE = serverX
 
 # Directories
-SRC = src
-INC = inc
 BIN = bin
+INC = inc
+LIB = src/lib
+SRC = src
 
-# Source and Object File(s)
+# Source(s)
 SOURCE = $(wildcard $(SRC)/*.c)
+
+# Windows_NT Support
+ifeq ($(OS),Windows_NT)
+	SOURCE += $(wildcard $(LIB)/*.c)
+	LFLAGS += -lws2_32 -lwsock32
+endif
+
+# Object File(s)
 OBJECT = $(patsubst %,$(BIN)/%, $(notdir $(SOURCE:.c=.o)))
 
 # Default Target
 $(BIN)/$(EXE): $(OBJECT)
-	$(CC) $^ -o $@
+	$(CC) $^ -o $@ $(LFLAGS)
+
+$(BIN)/%.o: $(LIB)/%.c
+	@mkdir -p $(BIN)
+	$(CC) $(CFLAGS) $(DIR) -c $< -o $@
 
 $(BIN)/%.o: $(SRC)/%.c
 	@mkdir -p $(BIN)
@@ -45,8 +61,8 @@ $(BIN)/%.o: $(SRC)/%.c
 
 # Help Option
 help:
-	@echo "src: $(SOURCE)"
-	@echo "obj: $(OBJECT)"
+	@echo "Source: $(SOURCE)"
+	@echo "Object: $(OBJECT)"
 
 # House-keeping
 clean:
