@@ -31,7 +31,7 @@ bool signaled = false;
 
 int main(int argc, char* argv[])
 {
-    // a global variable defined in errno.h that's "set by system 
+    // a global variable defined in errno.h that's "set by system
     // calls and some library functions [to a nonzero value]
     // in the event of an error to indicate what went wrong"
     errno = 0;
@@ -44,10 +44,8 @@ int main(int argc, char* argv[])
 
     // parse command-line arguments
     int opt;
-    while ((opt = getopt(argc, argv, "hp:")) != -1)
-    {
-        switch (opt)
-        {
+    while ((opt = getopt(argc, argv, "hp:")) != -1) {
+        switch (opt) {
             // -h
             case 'h':
                 printf("%s\n", usage);
@@ -61,8 +59,8 @@ int main(int argc, char* argv[])
     }
 
     // ensure port is a non-negative short and path to server's root is specified
-    if (port < 0 || port > SHRT_MAX || argv[optind] == NULL || strlen(argv[optind]) == 0)
-    {
+    if (port < 0 || port > SHRT_MAX || argv[optind] == NULL ||
+        strlen(argv[optind]) == 0) {
         // announce usage
         printf("%s\n", usage);
 
@@ -84,48 +82,38 @@ int main(int argc, char* argv[])
     char* path = NULL;
 
     // accept connections one at a time
-    while (true)
-    {
+    while (true) {
         // free last path, if any
-        if (path != NULL)
-        {
+        if (path != NULL) {
             free(path);
             path = NULL;
         }
 
         // free last message, if any
-        if (message != NULL)
-        {
+        if (message != NULL) {
             free(message);
             message = NULL;
         }
         length = 0;
 
         // close last client's socket, if any
-        if (cfd != -1)
-        {
+        if (cfd != -1) {
             close(cfd);
             cfd = -1;
         }
 
         // check for control-c
-        if (signaled)
-        {
-            stop();
-        }
+        if (signaled)    stop();
 
         // check whether client has connected
-        if (connected())
-        {
+        if (connected()) {
             // check for request
-            if (request(&message, &length))
-            {
+            if (request(&message, &length)) {
                 // extract message's request-line
                 // http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html
                 const char* haystack = message;
                 const char* needle = strstr(haystack, "\r\n");
-                if (needle == NULL)
-                {
+                if (needle == NULL) {
                     error(500);
                     continue;
                 }
@@ -139,20 +127,17 @@ int main(int argc, char* argv[])
                 // parse request-line
                 char abs_path[LimitRequestLine + 1];
                 char query[LimitRequestLine + 1];
-                if (parse(line, abs_path, query))
-                {
+                if (parse(line, abs_path, query)) {
                     // URL-decode absolute-path
                     char* p = urldecode(abs_path);
-                    if (p == NULL)
-                    {
+                    if (p == NULL) {
                         error(500);
                         continue;
                     }
 
                     // resolve absolute-path to local path
                     path = malloc(strlen(root) + strlen(p) + 1);
-                    if (path == NULL)
-                    {
+                    if (path == NULL) {
                         error(500);
                         continue;
                     }
@@ -161,19 +146,16 @@ int main(int argc, char* argv[])
                     free(p);
 
                     // ensure path exists
-                    if (access(path, F_OK) == -1)
-                    {
+                    if (access(path, F_OK) == -1) {
                         error(404);
                         continue;
                     }
 
                     // if path to directory
                     struct stat sb;
-                    if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode))
-                    {
+                    if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode)) {
                         // redirect from absolute-path to absolute-path/
-                        if (abs_path[strlen(abs_path) - 1] != '/')
-                        {
+                        if (abs_path[strlen(abs_path) - 1] != '/') {
                             char uri[strlen(abs_path) + 1 + 1];
                             strcpy(uri, abs_path);
                             strcat(uri, "/");
@@ -183,15 +165,11 @@ int main(int argc, char* argv[])
 
                         // use path/index.php or path/index.html, if present, instead of directory's path
                         char* index = indexes(path);
-                        if (index != NULL)
-                        {
+                        if (index != NULL) {
                             free(path);
                             path = index;
-                        }
-
-                        // list contents of directory
-                        else
-                        {
+                        } else {
+                            // list contents of directory
                             list(path);
                             continue;
                         }
@@ -199,21 +177,18 @@ int main(int argc, char* argv[])
 
                     // look up MIME type for file at path
                     const char* type = lookup(path);
-                    if (type == NULL)
-                    {
+                    if (type == NULL) {
                         error(501);
                         continue;
                     }
 
                     // interpret PHP script at path
-                    if (strcasecmp("text/x-php", type) == 0)
-                    {
+                    if (strcasecmp("text/x-php", type) == 0) {
                         interpret(path, query);
                     }
 
                     // transfer file at path
-                    else
-                    {
+                    else {
                         transfer(path, type);
                     }
                 }
