@@ -70,7 +70,13 @@ int scandir_main(const char *path, struct dirent ***e,
 
         if(size == n) {
             size *= 2;
-            ents = realloc(ents, sizeof(struct dirent *) * size);
+            struct dirent **newents = malloc(sizeof(struct dirent *) * size);
+            if (newents == NULL) {
+                free(ents);
+                return -2;
+            }
+            memncpy(newents, ents, sizeof(ents));
+            ents = newents;
         }
 
         ents[n] = malloc(sizeof(struct dirent));

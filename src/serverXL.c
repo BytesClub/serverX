@@ -50,11 +50,11 @@ void error(unsigned short code)
     if (phrase == NULL)    return;
 
     // template for response's content
-    char* template = "<html><head><title>%i %s</title></head><body><h1>%i %s
+    char* template = "<html><head><title>%i %s</title></head><body><h1>%i %s\
                     </h1></body></html>";
 
     // render template
-    char body[(strlen(template) - 2 - ((int) log10(code) + 1) - 2 +
+    char body[(strlen(template) - 2 - ((int) log10(code) + 1) - 2 +\
                strlen(phrase)) * 2 + 1];
     int length = sprintf(body, template, code, phrase, code, phrase);
     if (length < 0) {
@@ -170,7 +170,7 @@ void interpret(const char* path, const char* query)
     }
 
     // open pipe to PHP interpreter
-    char* format = "QUERY_STRING=\"%s\" REDIRECT_STATUS=200 SCRIPT_FILENAME=
+    char* format = "QUERY_STRING=\"%s\" REDIRECT_STATUS=200 SCRIPT_FILENAME=\
                   \"%s\" php";
     char command[strlen(format) + (strlen(path) - 2) + (strlen(query) - 2) + 1];
     if (sprintf(command, format, query, path) < 0) {
@@ -278,9 +278,9 @@ void list(const char* path)
 
     // prepare response
     const char* relative = path + strlen(root);
-    char* template = "<html><head><title>%s</title></head><body><h1>%s</h1><ul>
+    char* template = "<html><head><title>%s</title></head><body><h1>%s</h1><ul>\
                     %s</ul></body></html>";
-    char body[strlen(template) - 2 + strlen(relative) - 2 + strlen(relative) - 2
+    char body[strlen(template) - 2 + strlen(relative) - 2 + strlen(relative) - 2\
               + strlen(list) + 1];
     int length = sprintf(body, template, relative, relative, list);
     if (length < 0)
@@ -318,7 +318,7 @@ bool load(FILE* file, char** content, size_t* length)
         *content = (char *)malloc(*length * sizeof(char));
         fread(*content, sizeof(char), *length, file);
     } else {
-        char c;
+        int c;
         while((c = fgetc(file)) != EOF) {
             char *buffer = (char *)malloc((*length + 1) * sizeof(char));
             memcpy(buffer, *content, *length);
@@ -705,7 +705,7 @@ char* urldecode(const char* s)
     // iterate over characters in s, decoding percent-encoded octets, per
     // https://www.ietf.org/rfc/rfc3986.txt
     for (int i = 0, j = 0, n = strlen(s); i < n; i++, j++) {
-        if (s[i] == '%' && i < n - 2) {
+        if (i < n - 2 && s[i] == '%') {
             char octet[3];
             octet[0] = s[i + 1];
             octet[1] = s[i + 2];

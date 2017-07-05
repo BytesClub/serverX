@@ -34,15 +34,13 @@ char *realpath(const char *path, char resolved_path[MAX_PATH])
       if (size > MAX_PATH)
       {
         if (return_path != resolved_path) //Malloc'd buffer - Unstandard extension retry
-        {
-          size_t new_size;
-          
+        {          
           free(return_path);
           return_path = malloc(size);
 
           if (return_path)
           {
-            new_size = GetFullPathNameA(path, size, return_path, 0); //Try again
+            size_t new_size = GetFullPathNameA(path, size, return_path, 0); //Try again
 
             if (new_size > size) //If it's still too large, we have a problem, don't try again
             {
