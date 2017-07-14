@@ -18,13 +18,14 @@
 CC = gcc
 
 # Flags for Compiler
-CFLAGS = -ggdb3 -O0 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow -U__STRICT_ANSI__ 
+CFLAGS = -ggdb3 -O0 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow -U__STRICT_ANSI__
 
 # Flags for Linker
-LFLAGS = -lm 
+LFLAGS = -lm
 
 # Flags for Directories
 DIR = -I$(INC)
+VPATH = $(SRC)
 
 # Executable
 EXE = serverX
@@ -34,36 +35,45 @@ BIN = bin
 INC = inc
 LIB = src/lib
 SRC = src
+TST = public
+
+# Header(s)
+HEADER = $(wildcard $(INC)/*.h)
 
 # Source(s)
 SOURCE = $(wildcard $(SRC)/*.c)
 
 # Windows_NT Support
 ifeq ($(OS),Windows_NT)
+	VPATH += $(LIB)
 	SOURCE += $(wildcard $(LIB)/*.c)
 	LFLAGS += -lws2_32 -lwsock32
 endif
 
 # Object File(s)
-OBJECT = $(patsubst %,$(BIN)/%, $(notdir $(SOURCE:.c=.o)))
+OBJECT = $(addprefix $(BIN)/, $(notdir $(SOURCE:.c=.o)))
 
 # Default Target
 $(BIN)/$(EXE): $(OBJECT)
 	$(CC) $^ -o $@ $(LFLAGS)
 
-$(BIN)/%.o: $(LIB)/%.c
+$(BIN)/%.o: %.c $(HEADER)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) $(DIR) -c $< -o $@
 
-$(BIN)/%.o: $(SRC)/%.c
-	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) $(DIR) -c $< -o $@
+# Test Option
+test: $(BIN)/$(EXE) $(TST)
+	@echo "Testing of application started."
+	$^
 
 # Help Option
 help:
+	@echo "Header: $(HEADER)"
 	@echo "Source: $(SOURCE)"
 	@echo "Object: $(OBJECT)"
 
 # House-keeping
 clean:
-	rm -rf core $(EXE) bin/* *.o *.exe
+	@rm -rf core $(EXE) bin *.o *.exe
+
+.PHONY: test clean
