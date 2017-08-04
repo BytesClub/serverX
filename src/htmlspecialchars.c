@@ -26,34 +26,39 @@ extern char* root;
 extern int cfd, sfd;
 extern bool signaled;
 
-/**
- * URL-decodes string, returning dynamically allocated memory for decoded string
- * that must be deallocated by caller.
- */
-char* urldecode(const char* s)
+char* htmlspecialchars(const char* s)
 {
-    // check whether s is NULL
+    // ensure s is not NULL
     if (s == NULL)    return NULL;
 
-    // allocate enough (zeroed) memory for an undecoded copy of s
-    char* t = calloc(strlen(s) + 1, 1);
+    // allocate enough space for an unescaped copy of s
+    char* t = malloc(strlen(s) + 1);
     if (t == NULL)    return NULL;
+    t[0] = '\0';
 
-    // iterate over characters in s, decoding percent-encoded octets, per
-    // https://www.ietf.org/rfc/rfc3986.txt
-    for (int i = 0, j = 0, n = strlen(s); i < n; i++, j++) {
-        if (i < n - 2 && s[i] == '%') {
-            char octet[3];
-            octet[0] = s[i + 1];
-            octet[1] = s[i + 2];
-            octet[2] = '\0';
-            t[j] = (char) strtol(octet, NULL, 16);
-            i += 2;
-        } else if (s[i] == '+') {
-            t[j] = ' ';
+    // iterate over characters in s, escaping as needed
+    for (int i = 0, old = strlen(s), new = old; i < old; i++) {
+        if (s[i] == '&') {
+            const char* entity = "&amp;";
+            helperescape(entity, t, &new);
+        } else if (s[i] == '"') {
+            const char* entity = "&quot;";
+            helperescape(entity, t, &new);
+        } else if (s[i] == '\'') {
+            const char* entity = "&#039;";
+            helperescape(entity, t, &new);
+        } else if (s[i] == '<') {
+            const char* entity = "&lt;";
+            helperescape(entity, t, &new);
+        } else if (s[i] == '>') {
+            const char* entity = "&gt;";
+            helperescape(entity, t, &new);
         } else {
-            t[j] = s[i];
+            strncat(t, s + i, 1);
         }
+
+        // memory error
+        if (t == NULL)    return NULL;
     }
 
     // escaped string

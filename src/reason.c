@@ -1,3 +1,4 @@
+
 /* Copyright 2017 The serverX Authors. All Rights Reserved.
  * Maintainer: Bytes Club (https://bytesclub.github.io)<bytes-club@googlegroups.com>
 
@@ -25,17 +26,26 @@
 extern char* root;
 extern int cfd, sfd;
 extern bool signaled;
-
 /**
- * Checks (without blocking) whether a client has connected to server.
- * Returns true iff so.
+ * Returns status code's reason phrase.
+ *
+ * http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6
+ * https://tools.ietf.org/html/rfc2324
  */
-bool connected(void)
+const char* reason(unsigned short code)
 {
-    struct sockaddr_in cli_addr;
-    memset(&cli_addr, 0, sizeof(cli_addr));
-    socklen_t cli_len = sizeof(cli_addr);
-    cfd = accept(sfd, (struct sockaddr*) &cli_addr, &cli_len);
-    if (cfd == -1)    return false;
-    return true;
+    switch (code) {
+        case 200: return "OK";
+        case 301: return "Moved Permanently";
+        case 400: return "Bad Request";
+        case 403: return "Forbidden";
+        case 404: return "Not Found";
+        case 405: return "Method Not Allowed";
+        case 414: return "Request-URI Too Long";
+        case 418: return "I'm a teapot";
+        case 500: return "Internal Server Error";
+        case 501: return "Not Implemented";
+        case 505: return "HTTP Version Not Supported";
+        default:  return NULL;
+    }
 }

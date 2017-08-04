@@ -27,15 +27,12 @@ extern int cfd, sfd;
 extern bool signaled;
 
 /**
- * Checks (without blocking) whether a client has connected to server.
- * Returns true iff so.
+ * Frees memory allocated by scandir.
  */
-bool connected(void)
+void freedir(struct dirent** namelist, int n)
 {
-    struct sockaddr_in cli_addr;
-    memset(&cli_addr, 0, sizeof(cli_addr));
-    socklen_t cli_len = sizeof(cli_addr);
-    cfd = accept(sfd, (struct sockaddr*) &cli_addr, &cli_len);
-    if (cfd == -1)    return false;
-    return true;
+    if (namelist != NULL) {
+        for (int i = 0; i < n; i++)    free(namelist[i]);
+        free(namelist);
+    }
 }

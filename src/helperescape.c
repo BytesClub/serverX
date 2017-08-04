@@ -27,15 +27,14 @@ extern int cfd, sfd;
 extern bool signaled;
 
 /**
- * Checks (without blocking) whether a client has connected to server.
- * Returns true iff so.
+ * Escapes string for HTML. Returns dynamically allocated memory for escaped
+ * string that must be deallocated by caller.
  */
-bool connected(void)
+static bool helperescape(const char* entity, char* target, int* new)
 {
-    struct sockaddr_in cli_addr;
-    memset(&cli_addr, 0, sizeof(cli_addr));
-    socklen_t cli_len = sizeof(cli_addr);
-    cfd = accept(sfd, (struct sockaddr*) &cli_addr, &cli_len);
-    if (cfd == -1)    return false;
+    *new += strlen(entity);
+    target = realloc(target, *new);
+    if (target == NULL)    return false;
+    strcat(target, entity);
     return true;
 }

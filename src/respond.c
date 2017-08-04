@@ -27,15 +27,35 @@ extern int cfd, sfd;
 extern bool signaled;
 
 /**
- * Checks (without blocking) whether a client has connected to server.
- * Returns true iff so.
+ * Responds to a client with status code, headers, and body of specified length.
  */
-bool connected(void)
+void respond(int code, const char* headers, const char* body, size_t length)
 {
-    struct sockaddr_in cli_addr;
-    memset(&cli_addr, 0, sizeof(cli_addr));
-    socklen_t cli_len = sizeof(cli_addr);
-    cfd = accept(sfd, (struct sockaddr*) &cli_addr, &cli_len);
-    if (cfd == -1)    return false;
-    return true;
+    // determine Status-Line's phrase
+    // http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6.1
+    const char* phrase = reason(code);
+    if (phrase == NULL)    return;
+
+    // respond with Status-Line
+    if (dprintf(cfd, "HTTP/1.1 %i %s\r\n", code, phrase) < 0)    return;
+
+    // respond with headers
+    if (dprintf(cfd, "%s", headers) < 0)    return;
+
+    // respond with CRLF
+    if (dprintf(cfd, "\r\n") < 0)    return;
+
+    // respond with body
+    if (write(cfd, body, length) == -1)    return;
+
+    // log response line
+    if (code == 200) {
+        // green
+        printf("\033[32m");
+    } else {
+        // red
+        printf("\033[33m");
+    }
+    printf("HTTP/1.1 %i %s", code, phrase);
+    printf("\033[39m\n");
 }

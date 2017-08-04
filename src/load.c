@@ -27,15 +27,35 @@ extern int cfd, sfd;
 extern bool signaled;
 
 /**
- * Checks (without blocking) whether a client has connected to server.
- * Returns true iff so.
+ * Loads a file into memory dynamically allocated on heap.
+ * Stores address thereof in *content and length thereof in *length.
  */
-bool connected(void)
+bool load(FILE* file, char** content, size_t* length)
 {
-    struct sockaddr_in cli_addr;
-    memset(&cli_addr, 0, sizeof(cli_addr));
-    socklen_t cli_len = sizeof(cli_addr);
-    cfd = accept(sfd, (struct sockaddr*) &cli_addr, &cli_len);
-    if (cfd == -1)    return false;
+    *length = 0;
+    *content = NULL;
+    if (fseek(file, 0L, SEEK_END) != -1) {
+        *length = ftell(file);
+        rewind(file);
+    }
+    if (*length != 0) {
+        *content = (char *)malloc(*length * sizeof(char));
+        fread(*content, sizeof(char), *length, file);
+    } else {
+        int c;
+        while((c = fgetc(file)) != EOF) {
+            char *buffer = (char *)malloc((*length + 1) * sizeof(char));
+            memcpy(buffer, *content, *length);
+            free(*content);
+            *(buffer + *length) = c;
+            *content = buffer;
+            *length += 1;
+        }
+    }
+    if (ferror(file)) {
+        free(*content);
+        content = NULL, *length = 0;
+        return false;
+    }
     return true;
 }
