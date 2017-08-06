@@ -15,16 +15,14 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// list.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
 // global variables
 
 extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
 
 /**
  * Responds to client with directory listing of path.

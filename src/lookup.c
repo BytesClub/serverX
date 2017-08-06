@@ -15,16 +15,11 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// lookup.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
-// global variables
-
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
 
 /**
  * Returns MIME type for supported extensions, else NULL.

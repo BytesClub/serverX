@@ -15,16 +15,11 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// urldecode.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
-// global variables
-
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
 
 /**
  * URL-decodes string, returning dynamically allocated memory for decoded string

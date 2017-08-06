@@ -15,16 +15,11 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// interpret.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
-// global variables
-
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
 
 /**
  * Interprets PHP file at path using query string.

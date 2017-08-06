@@ -15,16 +15,14 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// respond.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
 // global variables
 
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
+extern int cfd;
 
 /**
  * Responds to a client with status code, headers, and body of specified length.

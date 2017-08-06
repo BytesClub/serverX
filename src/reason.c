@@ -1,4 +1,3 @@
-
 /* Copyright 2017 The serverX Authors. All Rights Reserved.
  * Maintainer: Bytes Club (https://bytesclub.github.io)<bytes-club@googlegroups.com>
 
@@ -16,16 +15,12 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// reason.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
-// global variables
 
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
 /**
  * Returns status code's reason phrase.
  *

@@ -15,16 +15,11 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// load.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
-// global variables
-
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
 
 /**
  * Loads a file into memory dynamically allocated on heap.

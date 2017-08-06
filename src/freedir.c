@@ -15,16 +15,11 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// freedir.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
-// global variables
-
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
 
 /**
  * Frees memory allocated by scandir.

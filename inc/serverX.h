@@ -15,10 +15,10 @@
 ==============================================================================*/
 
 // Library Header File
-// serverXL.h
+// serverX.h
 
-#ifndef __serverXL_h
-#define __serverXL_h
+#ifndef __serverX_h
+#define __serverX_h
 
 // feature test macro requirements
 
@@ -93,9 +93,6 @@
 #ifndef __windows_h
 #include <windows.h>
 #endif
-//#ifndef __tchar_h
-//#include <tchar.h>
-//#endif
 #define SIGNAL(SIG, HANDLER) \
     signal((SIG), (HANDLER));
 #if defined(_MSC_VER)
@@ -121,7 +118,7 @@
 // prototypes
 
 /**
- * Checks (without blocking) whether a client has connected to server. 
+ * Checks (without blocking) whether a client has connected to server.
  * Returns true iff so.
  */
 bool connected(void);
@@ -175,7 +172,7 @@ bool load(FILE* file, char** content, size_t* length);
 const char* lookup(const char* path);
 
 /**
- * Parses a request-line, storing its absolute-path at abs_path 
+ * Parses a request-line, storing its absolute-path at abs_path
  * and its query string at query, both of which are assumed
  * to be at least of length LimitRequestLine + 1.
  */
@@ -227,6 +224,7 @@ void transfer(const char* path, const char* type);
 char* urldecode(const char* s);
 
 #endif
+// Ends serverX.h
 
 #if defined(_WIN32) || defined(__WIN32__)
 
@@ -244,17 +242,10 @@ char* urldecode(const char* s);
 #include <varargs.h>
 #endif
 #endif
-/*#ifndef __libioP_h 
-#include <libioP.h>
-#endif*/
 
 int dprintf (int d, const char *format, ...);
 int vdprintf (int d, const char *format, va_list ap);
 
-/*libc_hidden_def (__dprintf)
-ldbl_hidden_def (__dprintf, dprintf)
-ldbl_weak_alias (__dprintf, dprintf)
-*/
 #endif
 
 // Header for realpath()
@@ -277,30 +268,13 @@ char *realpath(const char *path, char resolved_path[MAX_PATH]);
 
 
 int alphasort(const struct dirent **a, const struct dirent **b);
+
 int antialphasort2(const struct dirent **a, const struct dirent **b);
-/**
- * @brief scan a directory, returning relevant files
- * @param path[in] the directory to search
- * @param e[out] an array of dirents returned
- * @param filter[in] a predicate to determine if a dirent should be returned
- * @param compare[in] a function to determine the order of the return values
- * @return
- *   the number of files returned if successful, or a negative number on error
- */
+
 int scandir(const char *path, struct dirent ***e,
         int (*filter)(const struct dirent *),
         int (*compare)(const struct dirent **, const struct dirent **));
-/**
- * @brief scan a directory, returning relevant files. List scandir2, but
- *   filters using the full path of the file
- * @param path[in] the directory to search
- * @param e[out] an array of dirents returned
- * @param filter[in] a predicate to determine if a dirent should be returned,
- *   by the full path name of the file
- * @param compare[in] a function to determine the order of the return values
- * @return
- *   the number of files returned if successful, or a negative number on error
- */
+
 int scandir_full_path(const char *path, struct dirent ***e,
         int (*filter)(const char *),
         int (*compare)(const struct dirent **, const struct dirent **));

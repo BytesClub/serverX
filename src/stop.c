@@ -15,16 +15,15 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// stop.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
 // global variables
 
 extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
+extern int sfd;
 
 /**
  * Stop server, deallocating any resources.

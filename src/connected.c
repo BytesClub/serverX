@@ -15,16 +15,14 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// connected.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
 // global variables
 
-extern char* root;
 extern int cfd, sfd;
-extern bool signaled;
 
 /**
  * Checks (without blocking) whether a client has connected to server.

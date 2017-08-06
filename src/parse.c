@@ -15,16 +15,14 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// parse.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
 // global variables
 
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
+extern int cfd;
 
 /**
  * Parses a request-line, storing its absolute-path at abs_path

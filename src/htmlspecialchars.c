@@ -15,16 +15,24 @@
 ==============================================================================*/
 
 // Library Source File
-// serverXL.c
+// htmlspecialchars.c
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
-// global variables
 
-extern char* root;
-extern int cfd, sfd;
-extern bool signaled;
+/**
+ * Escapes string for HTML. Returns dynamically allocated memory for escaped
+ * string that must be deallocated by caller.
+ */
+static bool helperescape(const char* entity, char* target, int* new)
+{
+    *new += strlen(entity);
+    target = realloc(target, *new);
+    if (target == NULL)    return false;
+    strcat(target, entity);
+    return true;
+}
 
 char* htmlspecialchars(const char* s)
 {
