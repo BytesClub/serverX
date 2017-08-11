@@ -31,12 +31,13 @@ char* urldecode(const char* s)
     if (s == NULL)    return NULL;
 
     // allocate enough (zeroed) memory for an undecoded copy of s
-    char* t = calloc(strlen(s) + 1, 1);
+    int lenOfString = strlen(s);
+    char* t = calloc(lenOfString + 1, 1);
     if (t == NULL)    return NULL;
 
     // iterate over characters in s, decoding percent-encoded octets, per
     // https://www.ietf.org/rfc/rfc3986.txt
-    for (int i = 0, j = 0, n = strlen(s); i < n; i++, j++) {
+    for (int i = 0, j = 0, n = lenOfString; i < n; i++, j++) {
         if (i < n - 2 && s[i] == '%') {
             char octet[3];
             octet[0] = s[i + 1];
