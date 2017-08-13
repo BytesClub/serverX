@@ -37,8 +37,13 @@ void start(short port, const char* path)
     // ensure root is executable
     if (access(root, X_OK) == -1)    stop();
 
-    // announce root
+    // Process ID
+    pid_t process = getpid(), parent = getppid();
+
     printf("\033[33m");
+    // announce PID
+    printf("Starting Process: %i\tParent: %i\n", process, parent);
+    // announce root
     printf("Using %s for server's root", root);
     printf("\033[39m\n");
 
@@ -57,7 +62,7 @@ void start(short port, const char* path)
     serv_addr.sin_port = htons(port);
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     if (bind(sfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) == -1) {
-        printf("\033[33m");
+        printf("\033[31m");
         printf("Port %i already in use", port);
         printf("\033[39m\n");
         stop();
@@ -70,7 +75,8 @@ void start(short port, const char* path)
     struct sockaddr_in addr;
     socklen_t addrlen = sizeof(addr);
     if (getsockname(sfd, (struct sockaddr*) &addr, &addrlen) == -1)    stop();
-    printf("\033[33m");
+    printf("\033[32m");
+    printf("Started Process: %i\tParent: %i\n", process, parent);
     printf("Listening on port %i", ntohs(addr.sin_port));
     printf("\033[39m\n");
 }
