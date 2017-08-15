@@ -40,79 +40,81 @@
 // header files
 
 #ifndef __getopt_h
-#include <getopt.h>
+    #include <getopt.h>
 #endif
 #ifndef __dirent_h
-#include <dirent.h>
+    #include <dirent.h>
 #endif
 #ifndef __errno_h
-#include <errno.h>
+    #include <errno.h>
 #endif
 #ifndef __limits_h
-#include <limits.h>
+    #include <limits.h>
 #endif
 #ifndef __math_h
-#include <math.h>
+    #include <math.h>
 #endif
 #ifndef __signal_h
-#include <signal.h>
+    #include <signal.h>
 #endif
 #ifndef __stdbool_h
-#include <stdbool.h>
+    #include <stdbool.h>
 #endif
 #ifndef __stdio_h
-#include <stdio.h>
+    #include <stdio.h>
 #endif
 #ifndef __stdlib_h
-#include <stdlib.h>
+    #include <stdlib.h>
 #endif
 #ifndef __string_h
-#include <string.h>
+    #include <string.h>
 #endif
 #ifndef __strings_h
-#include <strings.h>
+    #include <strings.h>
 #endif
 #ifndef __sys_stat_h
-#include <sys/stat.h>
+    #include <sys/stat.h>
 #endif
 #ifndef __sys_types_h
-#include <sys/types.h>
+    #include <sys/types.h>
 #endif
 #ifndef __unistd_h
-#include <unistd.h>
+    #include <unistd.h>
 #endif
 
 #if defined(_WIN32) || defined(__WIN32__)
-#define _WIN32_WINNT 0x0501
-#ifndef __winsock2_h
-#include <winsock2.h>
-#endif
-#ifndef __ws2tcpip_h
-#include <ws2tcpip.h>
-#endif
-#ifndef __windows_h
-#include <windows.h>
-#endif
-#define SIGNAL(SIG, HANDLER) \
-    signal((SIG), (HANDLER));
-#if defined(_MSC_VER)
-#define popen(x, y)  _popen(x, y)
-#define pclose(x)    _pclose(x)
-#endif
-
+    #define _WIN32_WINNT 0x0501
+    #ifndef __winsock2_h
+        #include <winsock2.h>
+    #endif
+    #ifndef __ws2tcpip_h
+        #include <ws2tcpip.h>
+    #endif
+    #ifndef __windows_h
+        #include <windows.h>
+    #endif
+    #ifndef __win32_serverX_h
+        #include <winserverX.h>
+    #endif
+    #define SIGNAL(SIG, HANDLER) \
+        signal((SIG), (HANDLER));
+    #if defined(_MSC_VER)
+        #define popen(x, y)  _popen(x, y)
+        #define pclose(x)    _pclose(x)
+    #endif
 #else
-#ifndef __arpa_inet_h
-#include <arpa/inet.h>
-#endif
-#ifndef __sys_socket_h
-#include <sys/socket.h>
-#endif
-#define SIGNAL(SIG, HANDLER)     \
-    struct sigaction act;        \
-    act.sa_handler = (HANDLER);  \
-    act.sa_flags = 0;            \
-    sigemptyset(&act.sa_mask);   \
-    sigaction((SIG), &act, NULL);
+    #ifndef __arpa_inet_h
+        #include <arpa/inet.h>
+    #endif
+    #ifndef __sys_socket_h
+        #include <sys/socket.h>
+    #endif
+    #define SIGNAL(SIG, HANDLER)     \
+        struct sigaction act;        \
+        act.sa_handler = (HANDLER);  \
+        act.sa_flags = 0;            \
+        sigemptyset(&act.sa_mask);   \
+        sigaction((SIG), &act, NULL);
 #endif
 
 // prototypes
@@ -223,62 +225,4 @@ void transfer(const char* path, const char* type);
  */
 char* urldecode(const char* s);
 
-#endif
-// Ends serverX.h
-
-#if defined(_WIN32) || defined(__WIN32__)
-
-// Header for dprintf() and vdprintf()
-
-#ifndef __dprintf_h
-#define __dprintf_h
-
-#ifdef __STDC__
-#ifndef __stdarg_h
-#include <stdarg.h>
-#endif
-#else
-#ifndef __varargs_h
-#include <varargs.h>
-#endif
-#endif
-
-int dprintf (int d, const char *format, ...);
-int vdprintf (int d, const char *format, va_list ap);
-
-#endif
-
-// Header for realpath()
-
-#ifndef __realpath_h
-#define __realpath_h
-
-char *realpath(const char *path, char resolved_path[MAX_PATH]);
-
-#endif
-
-// Header for scandir()
-
-#ifndef __scandir_h
-#define __scadir_h
-
-#ifndef __assert_h
-#include <assert.h>
-#endif
-
-
-int alphasort(const struct dirent **a, const struct dirent **b);
-
-int antialphasort2(const struct dirent **a, const struct dirent **b);
-
-int scandir(const char *path, struct dirent ***e,
-        int (*filter)(const struct dirent *),
-        int (*compare)(const struct dirent **, const struct dirent **));
-
-int scandir_full_path(const char *path, struct dirent ***e,
-        int (*filter)(const char *),
-        int (*compare)(const struct dirent **, const struct dirent **));
-
-#endif
-
-#endif // win32 support
+#endif // Ends serverX.h
