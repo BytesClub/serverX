@@ -38,11 +38,11 @@ void start(short port, const char* path)
     if (access(root, X_OK) == -1)    stop();
 
     // Process ID
-    pid_t process = getpid(), parent = getppid();
+    pid_t pid = getpid(), ppid = getppid();
 
     printf("\033[33m");
     // announce PID
-    printf("Starting Process: %i\tParent: %i\n", process, parent);
+    printf("Starting Process: %lli\tParent: %lli\n", (long long)pid, (long long)ppid);
     // announce root
     printf("Using %s for server's root", root);
     printf("\033[39m\n");
@@ -76,7 +76,7 @@ void start(short port, const char* path)
     socklen_t addrlen = sizeof(addr);
     if (getsockname(sfd, (struct sockaddr*) &addr, &addrlen) == -1)    stop();
     printf("\033[32m");
-    printf("Started Process: %i\tParent: %i\n", process, parent);
+    printf("Started Process: %lli\n", (long long)pid);
     printf("Listening on port %i", ntohs(addr.sin_port));
     printf("\033[39m\n");
 }

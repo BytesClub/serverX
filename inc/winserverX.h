@@ -79,3 +79,16 @@ int scandir_full_path(const char *path, struct dirent ***e,
         int (*compare)(const struct dirent **, const struct dirent **));
 
 #endif // scandir.h
+
+// Header for ppid()
+
+#ifndef __getppid_h
+#define __getppid_h
+
+#ifndef __tlhelp32_h
+    #include <tlhelp32.h>
+#endif
+
+DWORD getppid();
+
+#endif // getppid.h

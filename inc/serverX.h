@@ -83,6 +83,9 @@
 #endif
 
 #if defined(_WIN32) || defined(__WIN32__)
+    #ifdef _WIN32_WINNT
+        #undef _WIN32_WINNT
+    #endif
     #define _WIN32_WINNT 0x0501
     #ifndef __winsock2_h
         #include <winsock2.h>
