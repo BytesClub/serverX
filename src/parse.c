@@ -31,11 +31,11 @@ extern int cfd;
  */
 bool parse(const char* line, char* abs_path, char* query)
 {
-    if (cfd == -1 || line == NULL)    return false;
-    if (abs_path != NULL) {
+    if (cfd == -1 || line == NULL) {
+        return false;
+    } else if (abs_path != NULL) {
         memset(abs_path, '\0', LimitRequestLine + 1);
-    }
-    if (query != NULL) {
+    } else if (query != NULL) {
         memset(query, '\0', LimitRequestLine + 1);
     }
     unsigned int length = strlen(line);
@@ -50,15 +50,14 @@ bool parse(const char* line, char* abs_path, char* query)
     if (*peek != '/') {
         error(501);
         return false;
-    }
-    if (strchr(peek, '\"')) {
+    } else if (strchr(peek, '\"')) {
         error(400);
         return false;
     }
     strcpy(query, "");
     char *q = strchr(peek, '?');
     int n = 0;
-    if (q) {
+    if (q != NULL) {
         n = strlen(q);
         strcpy(query, q + 1);
     }

@@ -8,7 +8,7 @@
  */
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
 #define BUF_SIZE 512
 
