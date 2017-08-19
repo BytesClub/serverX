@@ -40,7 +40,7 @@ void list(const char* path)
     if (dir == NULL)    return;
 
     // buffer for list items
-    char* list = malloc(1);
+    const char* list = malloc(1);
     list[0] = '\0';
 
     // iterate over directory entries
@@ -61,18 +61,20 @@ void list(const char* path)
 
         // append list item to buffer
         char* template = "<li><a href=\"%s\">%s</a></li>";
-        list = realloc(list, strlen(list) + strlen(template) - 2 + strlen(name)
-              - 2 + strlen(name) + 1);
-        if (list == NULL) {
+		char *newList;
+		newList = (char*)malloc(strlen(list) + strlen(template) - 2 + strlen(name) - 2 + strlen(name) + 1);
+		void *memcpy(newList, list, (strlen(list) + strlen(template) - 2 + strlen(name) - 2 + strlen(name) + 1));
+        if (newList == NULL) {
             free(name);
             freedir(namelist, n);
             error(500);
             return;
         }
-        if (sprintf(list + strlen(list), template, name, name) < 0) {
+        if (sprintf(newList + strlen(newList), template, name, name) < 0) {
             free(name);
             freedir(namelist, n);
             free(list);
+			free(newList);
             error(500);
             return;
         }
@@ -89,11 +91,12 @@ void list(const char* path)
     char* template = "<html><head><title>%s</title></head><body><h1>%s</h1><ul>\
                     %s</ul></body></html>";
     char body[strlen(template) - 2 + strlen(relative) - 2 + strlen(relative) - 2\
-              + strlen(list) + 1];
-    int length = sprintf(body, template, relative, relative, list);
+              + strlen(newList) + 1];
+    int length = sprintf(body, template, relative, relative, newList);
     if (length < 0)
     {
         free(list);
+		free(newList);
         closedir(dir);
         error(500);
         return;
@@ -101,6 +104,7 @@ void list(const char* path)
 
     // free buffer
     free(list);
+	free(newList);
 
     // close directory
     closedir(dir);
