@@ -7,7 +7,7 @@
  */
 
 // include header
-#include <serverXL.h>
+#include <serverX.h>
 
 char *realpath(const char *path, char resolved_path[MAX_PATH])
 {
@@ -22,7 +22,7 @@ char *realpath(const char *path, char resolved_path[MAX_PATH])
     else
     {
       //Non standard extension that glibc uses
-      return_path = malloc(MAX_PATH); 
+      return_path = malloc(MAX_PATH);
     }
 
     if (return_path) //Else EINVAL
@@ -34,7 +34,7 @@ char *realpath(const char *path, char resolved_path[MAX_PATH])
       if (size > MAX_PATH)
       {
         if (return_path != resolved_path) //Malloc'd buffer - Unstandard extension retry
-        {          
+        {
           free(return_path);
           return_path = malloc(size);
 
@@ -58,7 +58,7 @@ char *realpath(const char *path, char resolved_path[MAX_PATH])
             //I wasn't sure what to return here, but the standard does say to return EINVAL
             //if resolved_path is null, and in this case we couldn't malloc large enough buffer
             errno = EINVAL;
-          }  
+          }
         }
         else //resolved_path buffer isn't big enough
         {
@@ -68,13 +68,13 @@ char *realpath(const char *path, char resolved_path[MAX_PATH])
       }
 
       //GetFullPathNameA() returns 0 if some path resolve problem occured
-      if (!size) 
+      if (!size)
       {
         if (return_path != resolved_path) //Malloc'd buffer
         {
           free(return_path);
         }
-        
+
         return_path = 0;
 
         //Convert MS errors into standard errors
@@ -91,7 +91,7 @@ char *realpath(const char *path, char resolved_path[MAX_PATH])
           case ERROR_ACCESS_DENIED:
             errno = EACCES;
             break;
-          
+
           default: //Unknown Error
             errno = EIO;
             break;
@@ -104,13 +104,13 @@ char *realpath(const char *path, char resolved_path[MAX_PATH])
         struct stat stat_buffer;
 
         //Make sure path exists, stat() returns 0 on success
-        if (stat(return_path, &stat_buffer)) 
+        if (stat(return_path, &stat_buffer))
         {
           if (return_path != resolved_path)
           {
             free(return_path);
           }
-        
+
           return_path = 0;
           //stat() will set the correct errno for us
         }
@@ -126,6 +126,6 @@ char *realpath(const char *path, char resolved_path[MAX_PATH])
   {
     errno = EINVAL;
   }
-    
+
   return return_path;
 }

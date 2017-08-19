@@ -48,6 +48,9 @@ ifeq ($(OS),Windows_NT)
 	VPATH += $(LIB)
 	SOURCE += $(wildcard $(LIB)/*.c)
 	LFLAGS += -lws2_32 -lwsock32
+else
+	# POSIX Multi-thread
+	LFLAGS += -pthread
 endif
 
 # Object File(s)

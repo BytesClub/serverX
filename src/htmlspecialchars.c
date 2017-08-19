@@ -47,20 +47,15 @@ char* htmlspecialchars(const char* s)
     // iterate over characters in s, escaping as needed
     for (int i = 0, old = strlen(s), new = old; i < old; i++) {
         if (s[i] == '&') {
-            const char* entity = "&amp;";
-            helperescape(entity, t, &new);
+            helperescape("&amp;", t, &new);
         } else if (s[i] == '"') {
-            const char* entity = "&quot;";
-            helperescape(entity, t, &new);
+            helperescape("&quot;", t, &new);
         } else if (s[i] == '\'') {
-            const char* entity = "&#039;";
-            helperescape(entity, t, &new);
+            helperescape("&#039;", t, &new);
         } else if (s[i] == '<') {
-            const char* entity = "&lt;";
-            helperescape(entity, t, &new);
+            helperescape("&lt;", t, &new);
         } else if (s[i] == '>') {
-            const char* entity = "&gt;";
-            helperescape(entity, t, &new);
+            helperescape("&gt;", t, &new);
         } else {
             strncat(t, s + i, 1);
         }

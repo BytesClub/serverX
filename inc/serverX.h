@@ -107,6 +107,9 @@
 #ifndef __sys_socket_h
 #include <sys/socket.h>
 #endif
+#ifndef __pthread_h
+#include <pthread.h>
+#endif
 #define SIGNAL(SIG, HANDLER)     \
     struct sigaction act;        \
     act.sa_handler = (HANDLER);  \
@@ -177,6 +180,13 @@ const char* lookup(const char* path);
  * to be at least of length LimitRequestLine + 1.
  */
 bool parse(const char* line, char* path, char* query);
+
+/**
+ * Process for extacting client request and respond
+ * To be used by each thread independently
+ * Reference: http://man7.org/linux/man-pages/man7/pthreads.7.html
+ */
+void* process(void*);
 
 /**
  * Returns status code's reason phrase.
