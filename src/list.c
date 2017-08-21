@@ -40,8 +40,9 @@ void list(const char* path)
     if (dir == NULL)    return;
 
     // buffer for list items
-    const char* list = malloc(1);
+    char* list = malloc(1);
     list[0] = '\0';
+    int list_length = 0;
 
     // iterate over directory entries
     struct dirent** namelist = NULL;
@@ -61,23 +62,32 @@ void list(const char* path)
 
         // append list item to buffer
         char* template = "<li><a href=\"%s\">%s</a></li>";
-		char *newList;
-		newList = (char*)malloc(strlen(list) + strlen(template) - 2 + strlen(name) - 2 + strlen(name) + 1);
-		void *memcpy(newList, list, (strlen(list) + strlen(template) - 2 + strlen(name) - 2 + strlen(name) + 1));
+        int list_len = list_length + strlen(template) + 2 * strlen(name) - 3;
+        char* newList = malloc(list_len);
         if (newList == NULL) {
             free(name);
             freedir(namelist, n);
+            free(list);
             error(500);
             return;
         }
-        if (sprintf(newList + strlen(newList), template, name, name) < 0) {
+
+        // copy previous content and free
+        memcpy(newList, list, list_length);
+        free(list);
+        list = newList;
+
+        // print after previous value in list
+        if (snprintf(list + list_length, list_len, template, name, name) < 0) {
             free(name);
             freedir(namelist, n);
             free(list);
-			free(newList);
             error(500);
             return;
         }
+
+        // update buffer length
+        list_length = list_len - 1;
 
         // free escaped name
         free(name);
@@ -88,15 +98,14 @@ void list(const char* path)
 
     // prepare response
     const char* relative = path + strlen(root);
-    char* template = "<html><head><title>%s</title></head><body><h1>%s</h1><ul>\
-                    %s</ul></body></html>";
+    char* template = "<!DOCTYPE HTML><html><head><title>Home - %s</title></head>\
+<body><h1>%s</h1><ul>%s</ul></body></html>";
     char body[strlen(template) - 2 + strlen(relative) - 2 + strlen(relative) - 2\
-              + strlen(newList) + 1];
-    int length = sprintf(body, template, relative, relative, newList);
+              + strlen(list) + 1];
+    int length = sprintf(body, template, relative, relative, list);
     if (length < 0)
     {
         free(list);
-		free(newList);
         closedir(dir);
         error(500);
         return;
@@ -104,7 +113,6 @@ void list(const char* path)
 
     // free buffer
     free(list);
-	free(newList);
 
     // close directory
     closedir(dir);

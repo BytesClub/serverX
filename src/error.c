@@ -32,12 +32,13 @@ void error(unsigned short code)
 
     // template for response's content
     char* template = "<html><head><title>%i %s</title></head><body><h1>%i %s\
-                    </h1></body></html>";
+</h1></body></html>";
 
     // render template
-    char body[(strlen(template) - 2 - ((int) log10(code) + 1) - 2 +\
-               strlen(phrase)) * 2 + 1];
-    int length = sprintf(body, template, code, phrase, code, phrase);
+    int body_len = (strlen(template) - ((int) log10(code) + 1) - 4 +\
+               strlen(phrase)) * 2 + 1;
+    char body[body_len];
+    int length = snprintf(body, body_len, template, code, phrase, code, phrase);
     if (length < 0) {
         body[0] = '\0';
         length = 0;

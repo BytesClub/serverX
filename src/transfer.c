@@ -52,8 +52,9 @@ void transfer(const char* path, const char* type)
 
     // prepare response
     char* template = "Content-Type: %s\r\n";
-    char headers[strlen(template) - 2 + strlen(type) + 1];
-    if (sprintf(headers, template, type) < 0) {
+    int headers_len = strlen(template) + strlen(type) - 1;
+    char headers[headers_len];
+    if (snprintf(headers, headers_len, template, type) < 0) {
         error(500);
         return;
     }

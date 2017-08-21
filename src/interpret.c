@@ -34,9 +34,10 @@ void interpret(const char* path, const char* query)
 
     // open pipe to PHP interpreter
     char* format = "QUERY_STRING=\"%s\" REDIRECT_STATUS=200 SCRIPT_FILENAME=\
-                  \"%s\" php";
-    char command[strlen(format) + (strlen(path) - 2) + (strlen(query) - 2) + 1];
-    if (sprintf(command, format, query, path) < 0) {
+\"%s\" php";
+    int command_len = strlen(format) + strlen(path) + strlen(query) - 3;
+    char command[command_len];
+    if (snprintf(command, command_len, format, query, path) < 0) {
         error(500);
         return;
     }

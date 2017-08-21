@@ -27,8 +27,9 @@
 void redirect(const char* uri)
 {
     char* template = "Location: %s\r\n";
-    char headers[strlen(template) - 2 + strlen(uri) + 1];
-    if (sprintf(headers, template, uri) < 0) {
+    int headers_len = strlen(template) + strlen(uri) - 1;
+    char headers[headers_len];
+    if (snprintf(headers, headers_len, template, uri) < 0) {
         error(500);
         return;
     }
