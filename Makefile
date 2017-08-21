@@ -18,7 +18,7 @@
 CC = gcc
 
 # Flags for Compiler
-CFLAGS = -ggdb3 -O0 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow -U__STRICT_ANSI__
+CFLAGS = -ggdb3 -O0 -O3 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow -U__STRICT_ANSI__
 
 # Flags for Linker
 LFLAGS = -lm
