@@ -34,3 +34,10 @@
 * **Labels:** `Enhancement`, `Easy`
 * **Closed By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
 * **Closed On:** Jul 5, 2017, 5:28 AM GMT
+
+### [6. Realloc: Error prone method dispatch](https://github.com/BytesClub/serverX/issues/6)
+
+* **Opened On:** Jul 5, 2017, 5:30 AM GMT
+* **Labels:** `Bug`, `Medium`
+* **Closed By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
+* **Closed On:** Aug 21, 2017, 5:29 AM GMT
