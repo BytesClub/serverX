@@ -40,7 +40,7 @@ void list(const char* path)
     if (dir == NULL)    return;
 
     // buffer for list items
-    char* list = malloc(1);
+    const char* list = malloc(1);
     list[0] = '\0';
     int list_length = 0;
 
@@ -62,8 +62,14 @@ void list(const char* path)
 
         // append list item to buffer
         char* template = "<li><a href=\"%s\">%s</a></li>";
+<<<<<<< HEAD
+		char *newList;
+		newList = (char*)malloc(strlen(list) + strlen(template) - 2 + strlen(name) - 2 + strlen(name) + 1);
+		void *memcpy(newList, list, (strlen(list) + strlen(template) - 2 + strlen(name) - 2 + strlen(name) + 1));
+=======
         int list_len = list_length + strlen(template) + 2 * strlen(name) - 3;
         char* newList = malloc(list_len);
+>>>>>>> upstream/master
         if (newList == NULL) {
             free(name);
             freedir(namelist, n);
@@ -71,6 +77,9 @@ void list(const char* path)
             error(500);
             return;
         }
+<<<<<<< HEAD
+        if (sprintf(newList + strlen(newList), template, name, name) < 0) {
+=======
 
         // copy previous content and free
         memcpy(newList, list, list_length);
@@ -79,9 +88,11 @@ void list(const char* path)
 
         // print after previous value in list
         if (sprintf(list + list_length, template, name, name) < 0) {
+>>>>>>> upstream/master
             free(name);
             freedir(namelist, n);
             free(list);
+			free(newList);
             error(500);
             return;
         }
@@ -98,14 +109,23 @@ void list(const char* path)
 
     // prepare response
     const char* relative = path + strlen(root);
+<<<<<<< HEAD
+    char* template = "<html><head><title>%s</title></head><body><h1>%s</h1><ul>\
+                    %s</ul></body></html>";
+    char body[strlen(template) - 2 + strlen(relative) - 2 + strlen(relative) - 2\
+              + strlen(newList) + 1];
+    int length = sprintf(body, template, relative, relative, newList);
+=======
     char* template = "<!DOCTYPE HTML><html><head><title>Home - %s</title></head> \
 <body><h1>%s</h1><ul>%s</ul></body></html>";
     char body[strlen(template) - 2 + strlen(relative) - 2 + strlen(relative) - 2 \
               + strlen(list) + 1];
     int length = sprintf(body, template, relative, relative, list);
+>>>>>>> upstream/master
     if (length < 0)
     {
         free(list);
+		free(newList);
         closedir(dir);
         error(500);
         return;
@@ -113,6 +133,7 @@ void list(const char* path)
 
     // free buffer
     free(list);
+	free(newList);
 
     // close directory
     closedir(dir);
