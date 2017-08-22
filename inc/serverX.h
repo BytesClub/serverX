@@ -40,255 +40,250 @@
 // header files
 
 #ifndef __getopt_h
-#include <getopt.h>
+    #include <getopt.h>
 #endif
 #ifndef __dirent_h
-#include <dirent.h>
+    #include <dirent.h>
 #endif
 #ifndef __errno_h
-#include <errno.h>
+    #include <errno.h>
 #endif
 #ifndef __limits_h
-#include <limits.h>
+    #include <limits.h>
 #endif
 #ifndef __math_h
-#include <math.h>
+    #include <math.h>
 #endif
 #ifndef __signal_h
-#include <signal.h>
+    #include <signal.h>
 #endif
 #ifndef __stdbool_h
-#include <stdbool.h>
+    #include <stdbool.h>
 #endif
 #ifndef __stdio_h
-#include <stdio.h>
+    #include <stdio.h>
 #endif
 #ifndef __stdlib_h
-#include <stdlib.h>
+    #include <stdlib.h>
 #endif
 #ifndef __string_h
-#include <string.h>
+    #include <string.h>
 #endif
 #ifndef __strings_h
-#include <strings.h>
+    #include <strings.h>
 #endif
 #ifndef __sys_stat_h
-#include <sys/stat.h>
+    #include <sys/stat.h>
 #endif
 #ifndef __sys_types_h
-#include <sys/types.h>
+    #include <sys/types.h>
 #endif
 #ifndef __unistd_h
-#include <unistd.h>
+    #include <unistd.h>
 #endif
 
 #if defined(_WIN32) || defined(__WIN32__)
-#define _WIN32_WINNT 0x0501
-#ifndef __winsock2_h
-#include <winsock2.h>
-#endif
-#ifndef __ws2tcpip_h
-#include <ws2tcpip.h>
-#endif
-#ifndef __windows_h
-#include <windows.h>
-#endif
-#define SIGNAL(SIG, HANDLER) \
-    signal((SIG), (HANDLER));
-#if defined(_MSC_VER)
-#define popen(x, y)  _popen(x, y)
-#define pclose(x)    _pclose(x)
-#endif
-
+    #ifdef _WIN32_WINNT
+        #undef _WIN32_WINNT
+    #endif
+    #define _WIN32_WINNT 0x0501
+    #ifndef __winsock2_h
+        #include <winsock2.h>
+    #endif
+    #ifndef __ws2tcpip_h
+        #include <ws2tcpip.h>
+    #endif
+    #ifndef __windows_h
+        #include <windows.h>
+    #endif
+    #ifndef __win32_serverX_h
+        #include <winserverX.h>
+    #endif
+    #define SIGNAL(SIG, HANDLER) \
+        signal((SIG), (HANDLER));
+    #if defined(_MSC_VER)
+        #define popen(x, y)  _popen(x, y)
+        #define pclose(x)    _pclose(x)
+    #endif
 #else
-#ifndef __arpa_inet_h
-#include <arpa/inet.h>
-#endif
-#ifndef __sys_socket_h
-#include <sys/socket.h>
-#endif
-#ifndef __pthread_h
-#include <pthread.h>
-#endif
-#define SIGNAL(SIG, HANDLER)     \
-    struct sigaction act;        \
-    act.sa_handler = (HANDLER);  \
-    act.sa_flags = 0;            \
-    sigemptyset(&act.sa_mask);   \
-    sigaction((SIG), &act, NULL);
+    #ifndef __arpa_inet_h
+        #include <arpa/inet.h>
+    #endif
+    #ifndef __sys_socket_h
+        #include <sys/socket.h>
+    #endif
+    #define SIGNAL(SIG, HANDLER)     \
+        struct sigaction act;        \
+        act.sa_handler = (HANDLER);  \
+        act.sa_flags = 0;            \
+        sigemptyset(&act.sa_mask);   \
+        sigaction((SIG), &act, NULL);
 #endif
 
 // prototypes
 
 /**
- * Checks (without blocking) whether a client has connected to server.
- * Returns true iff so.
+ * @ function:       connected
+ * @ brief:          Checks (without blocking) whether a client has connected
+ *                   to the server.
+ * @ returns:        True iff so, else false.
  */
 bool connected(void);
 
 /**
- * Responds to client with specified status code.
+ * @ function:       error
+ * @ brief:          Responds to client with specified status code.
+ * @ param code:     The HTTP error code.
  */
 void error(unsigned short code);
 
 /**
- * Frees memory allocated by scandir.
+ * @ function:       freedir
+ * @ brief:          Frees memory allocated by scandir.
+ * @ param namelist: List of files in given directory.
+ * @ param n:        Number of files in given directory.
  */
 void freedir(struct dirent** namelist, int n);
 
 /**
- * Handles signals.
+ * @ function:       handler
+ * @ brief:          Handles signals (SIGINT).
+ * @ param signal:   The signal code.
  */
 void handler(int signal);
 
 /**
- * Escapes string for HTML. Returns dynamically allocated memory for escaped
- * string that must be deallocated by caller.
+ * @ function:      htmlspecialchars
+ * @ brief:         Escapes string for HTML. Returns dynamically allocated
+ *                  memory for escaped string that must be deallocated by caller.
+ * @ param s:       String that has to be escaped.
+ * @ returns:       Pointer to escaped string.
  */
 char* htmlspecialchars(const char* s);
 
 /**
- * Checks, in order, whether index.php or index.html exists inside of path.
- * Returns path to first match if so, else NULL.
+ * @ function:      indexes
+ * @ brief:         Checks, in order, whether index.php or index.html exists
+ *                  inside of path.
+ * @ param path:    Requested path from URL.
+ * @ returns:       Path to first match if so, else NULL.
  */
 char* indexes(const char* path);
 
 /**
- * Interprets PHP file at path using query string.
+ * @ function:      interpret
+ * @ brief:         Interprets PHP file at path using query string.
+ * @ param path:    Path to PHP script.
+ * @ param query:   Query found with URL (optional).
  */
 void interpret(const char* path, const char* query);
 
 /**
- * Responds to client with directory listing of path.
+ * @ function:      list
+ * @ brief:         Responds to client with directory listing of path.
+ * @ param path:    Requested path from URL.
  */
 void list(const char* path);
 
 /**
- * Loads a file into memory dynamically allocated on heap.
- * Stores address thereof in *content and length thereof in *length.
+ * @ function:      load
+ * @ brief:         Loads a file into memory dynamically allocated on heap.
+ *                  Stores address in *content and length in *length.
+ * @ param file:    File to be read into memory.
+ * @ param content: Pointer to string holds address of the content.
+ * @ param length:  Pointer to integer storing size of the content.
+ * @ returns:       True iff action successful, false otherwise.
  */
 bool load(FILE* file, char** content, size_t* length);
 
 /**
- * Returns MIME type for supported extensions, else NULL.
+ * @ function:      lookup
+ * @ brief:         Finds MIME type for supported extensions, else NULL.
+ * @ param path:    Path of the delivering file.
+ * @ returns:       Type of file as string.
  */
 const char* lookup(const char* path);
 
 /**
- * Parses a request-line, storing its absolute-path at abs_path
- * and its query string at query, both of which are assumed
- * to be at least of length LimitRequestLine + 1.
+ * @ function:      parse
+ * @ brief:         Parses a request-line, storing its absolute-path at abs_path
+ *                  and its query string at query, both of which are assumed
+ *                  to be at least of length LimitRequestLine + 1.
+ * @ param line:    HTTP request with URL.
+ * @ param path:    Path extracted from URL.
+ * @ param query:   Query extracted from URL.
+ * @ returns:       True iff action successful, false otherwise.
  */
 bool parse(const char* line, char* path, char* query);
 
 /**
- * Process for extacting client request and respond
- * To be used by each thread independently
- * Reference: http://man7.org/linux/man-pages/man7/pthreads.7.html
- */
-void* process(void*);
-
-/**
- * Returns status code's reason phrase.
- *
- * http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6
- * https://tools.ietf.org/html/rfc2324
+ * @ function:      reason
+ * @ brief:         Returns status code's reason phrase.
+ * @ param code:    Status code for error.
+ * @ returns:       String against status code give.
+ * @ ref:           http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6
+ *                  https://tools.ietf.org/html/rfc2324
  */
 const char* reason(unsigned short code);
 
 /**
- * Redirects client to uri.
+ * @ function:      redirect
+ * @ brief:         Redirects client to uri.
+ * @ param uri:     URL that it has to redirect.
  */
 void redirect(const char* uri);
 
 /**
- * Reads (without blocking) an HTTP request's headers into memory dynamically allocated on heap.
- * Stores address thereof in *message and length thereof in *length.
+ * @ function:      request
+ * @ brief:         Reads (without blocking) an HTTP request's headers into
+ *                  memory dynamically allocated on heap.
+ *                  Stores address in *message and length in *length.
+ * @ param message: Pointer to the buffer.
+ * @ param length:  Pointer to the integer holding the size of buffer.
+ * @ returns:       True iff action successful, false otherwise.
  */
 bool request(char** message, size_t* length);
 
 /**
- * Responds to a client with status code, headers, and body of specified length.
+ * @ function:      respond
+ * @ brief:         Responds to a client with status code, headers, and body
+ *                  of specified length.
+ * @ param code:    HTTP status code.
+ * @ param headers: String for HTTP headers.
+ * @ param body:    Response body from buffer.
+ * @ param length:  Size of buffer.
  */
 void respond(int code, const char* headers, const char* body, size_t length);
 
 /**
- * Starts server on specified port rooted at path.
+ * @ function:      start
+ * @ brief:         Starts server on specified port rooted at path.
+ * @ param port:    TCP Port configured for connection.
+ * @ param path:    Root path for communication.
  */
 void start(short port, const char* path);
 
 /**
- * Stop server, deallocating any resources.
+ * @ function:      stop
+ * @ brief:         Stop server, deallocating any resources.
  */
 void stop(void);
 
 /**
- * Transfers file at path with specified type to client.
+ * @ function:      transfer
+ * @ brief:         Transfers file at path with specified type to client.
+ * @ param path:    Path of the file source.
+ * @ param type:    MIME-type of the file.
  */
 void transfer(const char* path, const char* type);
 
 /**
- * URL-decodes string, returning dynamically allocated memory for decoded string
- * that must be deallocated by caller.
+ * @ function:      urldecode
+ * @ brief:         URL-decodes string, returning dynamically allocated memory
+ *                  for decoded string that must be deallocated by caller.
+ * @ param s:       URL request string.
+ * @ returns:       Decoded request string.
  */
 char* urldecode(const char* s);
 
-#endif
-// Ends serverX.h
-
-#if defined(_WIN32) || defined(__WIN32__)
-
-// Header for dprintf() and vdprintf()
-
-#ifndef __dprintf_h
-#define __dprintf_h
-
-#ifdef __STDC__
-#ifndef __stdarg_h
-#include <stdarg.h>
-#endif
-#else
-#ifndef __varargs_h
-#include <varargs.h>
-#endif
-#endif
-
-int dprintf (int d, const char *format, ...);
-int vdprintf (int d, const char *format, va_list ap);
-
-#endif
-
-// Header for realpath()
-
-#ifndef __realpath_h
-#define __realpath_h
-
-char *realpath(const char *path, char resolved_path[MAX_PATH]);
-
-#endif
-
-// Header for scandir()
-
-#ifndef __scandir_h
-#define __scadir_h
-
-#ifndef __assert_h
-#include <assert.h>
-#endif
-
-
-int alphasort(const struct dirent **a, const struct dirent **b);
-
-int antialphasort2(const struct dirent **a, const struct dirent **b);
-
-int scandir(const char *path, struct dirent ***e,
-        int (*filter)(const struct dirent *),
-        int (*compare)(const struct dirent **, const struct dirent **));
-
-int scandir_full_path(const char *path, struct dirent ***e,
-        int (*filter)(const char *),
-        int (*compare)(const struct dirent **, const struct dirent **));
-
-#endif
-
-#endif // win32 support
+#endif // Ends serverX.h
