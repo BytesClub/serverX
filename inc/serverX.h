@@ -82,19 +82,21 @@
     #include <unistd.h>
 #endif
 
+// Windows specific files
 #if defined(_WIN32) || defined(__WIN32__)
+    #define OS_NAME "Windows NT"
     #ifdef _WIN32_WINNT
         #undef _WIN32_WINNT
     #endif
     #define _WIN32_WINNT 0x0501
+    #ifndef __windows_h
+        #include <windows.h>
+    #endif
     #ifndef __winsock2_h
         #include <winsock2.h>
     #endif
     #ifndef __ws2tcpip_h
         #include <ws2tcpip.h>
-    #endif
-    #ifndef __windows_h
-        #include <windows.h>
     #endif
     #ifndef __win32_serverX_h
         #include <winserverX.h>
@@ -105,9 +107,15 @@
         #define popen(x, y)  _popen(x, y)
         #define pclose(x)    _pclose(x)
     #endif
+
+// Linux specific files
 #else
+    #define OS_NAME "GNU/Linux"
     #ifndef __arpa_inet_h
         #include <arpa/inet.h>
+    #endif
+    #ifndef __pthread_h
+        #include <pthread.h>
     #endif
     #ifndef __sys_socket_h
         #include <sys/socket.h>
@@ -215,6 +223,14 @@ const char* lookup(const char* path);
  * @ returns:       True iff action successful, false otherwise.
  */
 bool parse(const char* line, char* path, char* query);
+
+/**
+ * @ function:      process
+ * @ brief:         Contains implementations for request handling.
+ * @ param args:    Any argument sent as void pointer.
+ * @ returns:       Return value is stored in memory, and address is returned.
+ */
+void* process(void* args);
 
 /**
  * @ function:      reason
