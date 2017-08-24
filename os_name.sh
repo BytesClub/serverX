@@ -30,7 +30,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
         # Older Red Hat, CentOS, etc.
         ...
     else
-        # Fall back to uname, e.g. "Linux <version>", also works for BSD, etc.
+        # Fall back to uname, e.g. "Linux <version>"
         OS=$(uname -s)
         VER=$(uname -r)
     fi
@@ -40,12 +40,21 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
         ...
 
 elif [[ "$OSTYPE" == "cygwin" ]]; then
+    PLATFORM="Windows"
         # POSIX compatibility layer and Linux environment emulation for Windows
-        ...
+        if type cmd /c ver >/dev/null 2>&1; then
+            OS=$(cmd /c ver)
+        else
+            # Fall back to uname
+            OS=$(uname -s)
+            VER=$(uname -r)
+        fi
 
 elif [[ "$OSTYPE" == "msys" ]]; then
+    PLATFORM="Windows"
         # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
-        ...
+        OS=$(systeminfo | sed -n 's/^OS Name:[[:blank:]]*//p')
+        VER=$(systeminfo | sed -n 's/^OS Version:[[:blank:]]*//p')
 
 elif [[ "$OSTYPE" == "freebsd"* ]]; then
     PLATFORM="FreeBSD"
@@ -54,4 +63,4 @@ elif [[ "$OSTYPE" == "freebsd"* ]]; then
 fi
 
 # Echo result
-echo "$PLATFORM $OS $VER"
+echo "$PLATFORM/$OS/$VER"
