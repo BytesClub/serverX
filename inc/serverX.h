@@ -20,6 +20,9 @@
 #ifndef __serverX_h
 #define __serverX_h
 
+// Version info
+#define serverX_VERSION "1.0.0"
+
 // feature test macro requirements
 
 #define _GNU_SOURCE

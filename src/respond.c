@@ -39,8 +39,9 @@ void respond(int code, const char* headers, const char* body, size_t length)
 
     // respond with headers
     const char* defaultHeader = "X-Content-Type-Options: nosniff\r\n\
-Server: serverX/1.0.0 (%s)\r\n%s";
-    if (dprintf(cfd, defaultHeader, OS_NAME, headers) < 0)    return;
+Server: serverX/%s (%s)\r\n%s";
+    int len = dprintf(cfd, defaultHeader, serverX_VERSION, OS_NAME, headers);
+    if (len < 0)    return;
 
     // respond with CRLF
     if (dprintf(cfd, "\r\n") < 0)    return;
