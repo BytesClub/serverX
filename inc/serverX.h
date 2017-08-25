@@ -63,6 +63,9 @@
 #ifndef __math_h
     #include <math.h>
 #endif
+#ifndef __pthread_h
+    #include <pthread.h>
+#endif
 #ifndef __signal_h
     #include <signal.h>
 #endif
@@ -99,17 +102,17 @@
         #undef _WIN32_WINNT
     #endif
     #define _WIN32_WINNT 0x0501
-    #ifndef __windows_h
+    #ifndef _WINDOWS_H
         #include <windows.h>
     #endif
-    #ifndef __winsock2_h
+    #ifndef _WIN32_SERVERX_H
+        #include <winserverX.h>
+    #endif
+    #ifndef _WINSOCK2_H
         #include <winsock2.h>
     #endif
-    #ifndef __ws2tcpip_h
+    #ifndef _WS2TCPIP_H
         #include <ws2tcpip.h>
-    #endif
-    #ifndef __win32_serverX_h
-        #include <winserverX.h>
     #endif
     #define SIGNAL(SIG, HANDLER) \
         signal((SIG), (HANDLER));
@@ -123,9 +126,6 @@
     #define OS_NAME "GNU/Linux"
     #ifndef __arpa_inet_h
         #include <arpa/inet.h>
-    #endif
-    #ifndef __pthread_h
-        #include <pthread.h>
     #endif
     #ifndef __sys_socket_h
         #include <sys/socket.h>

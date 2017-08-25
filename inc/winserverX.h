@@ -17,8 +17,8 @@
 // Library Header File
 // winserverX.h
 
-#ifndef __win32_serverX_h
-#define __win32_serverX_h
+#ifndef _WIN32_SERVERX_H
+#define _WIN32_SERVERX_H
 
 // feature test macro requirements
 
@@ -29,9 +29,6 @@
 #define _XOPEN_SOURCE_EXTENDED
 
 // Header for dprintf() and vdprintf()
-
-#ifndef __dprintf_h
-#define __dprintf_h
 
 #ifdef __STDC__
     #ifndef __stdarg_h
@@ -46,26 +43,17 @@
 int dprintf (int d, const char *format, ...);
 int vdprintf (int d, const char *format, va_list ap);
 
-#endif // dprintf.h
 
 // Header for realpath()
 
-#ifndef __realpath_h
-#define __realpath_h
-
 char *realpath(const char *path, char resolved_path[MAX_PATH]);
 
-#endif // realpath.h
 
 // Header for scandir()
-
-#ifndef __scandir_h
-#define __scandir_h
 
 #ifndef __assert_h
     #include <assert.h>
 #endif
-
 
 int alphasort(const struct dirent **a, const struct dirent **b);
 
@@ -79,12 +67,8 @@ int scandir_full_path(const char *path, struct dirent ***e,
         int (*filter)(const char *),
         int (*compare)(const struct dirent **, const struct dirent **));
 
-#endif // scandir.h
 
 // Header for ppid()
-
-#ifndef __getppid_h
-#define __getppid_h
 
 #ifndef __tlhelp32_h
     #include <tlhelp32.h>
@@ -92,4 +76,4 @@ int scandir_full_path(const char *path, struct dirent ***e,
 
 DWORD getppid();
 
-#endif // getppid.h
+#endif // winserverX.h
