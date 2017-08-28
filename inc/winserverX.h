@@ -92,3 +92,5 @@ int scandir_full_path(const char *path, struct dirent ***e,
 DWORD getppid();
 
 #endif // getppid.h
+
+#endif // winserverX.h
