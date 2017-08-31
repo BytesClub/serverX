@@ -52,6 +52,7 @@ void* process(void *args) {
         const char* needle = strstr(haystack, "\r\n");
         if (needle == NULL) {
             error(500);
+            free(message), message = NULL;
             pthread_exit((void*)2);
         }
         char line[needle - haystack + 2 + 1];
@@ -69,6 +70,7 @@ void* process(void *args) {
             char* p = urldecode(abs_path);
             if (p == NULL) {
                 error(500);
+                free(message), message = NULL;
                 pthread_exit((void*)2);
             }
 
@@ -76,6 +78,7 @@ void* process(void *args) {
             path = malloc(strlen(root) + strlen(p) + 1);
             if (path == NULL) {
                 error(500);
+                free(message), message = NULL;
                 pthread_exit((void*)2);
             }
             strcpy(path, root);
@@ -85,6 +88,8 @@ void* process(void *args) {
             // ensure path exists
             if (access(path, F_OK) == -1) {
                 error(404);
+                free(path), path = NULL;
+                free(message), message = NULL;
                 pthread_exit((void*)2);
             }
 
@@ -97,17 +102,21 @@ void* process(void *args) {
                     strcpy(uri, abs_path);
                     strcat(uri, "/");
                     redirect(uri);
+                    free(path), path = NULL;
+                    free(message), message = NULL;
                     pthread_exit((void*)0);
                 }
 
                 // use path/index.php or path/index.html, if present, instead of directory's path
                 char* index = indexes(path);
                 if (index != NULL) {
-                    free(path);
-                    path = index;
+                    free(path), path = index;
+                    free(message), message = NULL;
                 } else {
                     // list contents of directory
                     list(path);
+                    free(path), path = NULL;
+                    free(message), message = NULL;
                     pthread_exit((void*)0);
                 }
             }
@@ -116,17 +125,23 @@ void* process(void *args) {
             const char* type = lookup(path);
             if (type == NULL) {
                 error(501);
+                free(path), path = NULL;
+                free(message), message = NULL;
                 pthread_exit((void*)2);
             }
 
             // interpret PHP script at path
             if (strcasecmp("text/x-php", type) == 0) {
                 interpret(path, query);
+                free(path), path = NULL;
+                free(message), message = NULL;
             }
 
             // transfer file at path
             else {
                 transfer(path, type);
+                free(path), path = NULL;
+                free(message), message = NULL;
             }
         }
     }

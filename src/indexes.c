@@ -27,15 +27,29 @@
  */
 char* indexes(const char* path)
 {
-    char *file = malloc(strlen(path) + 10);
-    strcpy(file, path);
-    strcat(file, "index.php");
+    const int ext_len = 11;
+    int path_len = strlen(path);
+    char *file = malloc(path_len + ext_len);
+    strncpy(file, path, path_len);
+    strcat(file, "index.php"); // This line have some memory issues, details below
 
     if (! access(file, F_OK)) {
+        // index.php exists
         return file;
     } else if (strcpy(strstr(file, ".php"), ".html") && ! access(file, F_OK)) {
+        // index.html exists
         return file;
     }
     //default return
     return NULL;
 }
+
+/** Valgrind Error Details
+==4660== Thread 2:
+==4660== Conditional jump or move depends on uninitialised value(s)
+==4660==    at 0x402084: indexes (indexes.c:34)
+==4660==    by 0x402863: process (process.c:111)
+==4660==    by 0x513EDC4: start_thread (in /usr/lib64/libpthread-2.17.so)
+==4660==    by 0x544A76C: clone (in /usr/lib64/libc-2.17.so)
+==4660==
+ */
