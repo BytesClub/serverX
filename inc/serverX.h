@@ -98,6 +98,7 @@
 // Windows specific files
 #if defined(_WIN32) || defined(__WIN32__)
     #define OS_NAME "Windows NT"
+    #define WIN32_LEAN_AND_MEAN
     #ifdef _WIN32_WINNT
         #undef _WIN32_WINNT
     #endif
