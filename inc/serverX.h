@@ -25,6 +25,7 @@
 
 // feature test macro requirements
 
+#define _DEFAULT_SOURCE
 #define _GNU_SOURCE
 #define _BSD_SOURCE
 #define _XOPEN_SOURCE 700
