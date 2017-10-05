@@ -41,6 +41,11 @@
 // number of bytes for buffers
 #define BYTES 512
 
+// C++ header compatibility [open]
+#ifdef _cplusplus
+    extern "C" {
+#endif
+
 // header files
 
 #ifndef __getopt_h
@@ -305,5 +310,10 @@ void transfer(const char* path, const char* type);
  * @ returns:       Decoded request string.
  */
 char* urldecode(const char* s);
+
+// C++ compatibility [close]
+#ifdef _cplusplus
+    }
+#endif
 
 #endif // Ends serverX.h
