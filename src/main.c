@@ -24,7 +24,7 @@
 char* root = NULL;
 
 // file descriptor for sockets
-int cfd = -1, sfd = -1;
+int sfd = -1;
 
 // flag indicating whether control-c has been heard
 bool signaled = false;
@@ -37,7 +37,6 @@ int main(int argc, char* argv[])
     errno = 0;
 
     // Thread ID and Attributes
-    pthread_t tid;
     pthread_attr_t tattr;
 
     // default to port 8080
@@ -80,24 +79,22 @@ int main(int argc, char* argv[])
 
     // accept connections one at a time
     while (true) {
-        // close last client's socket, if any
-        if (cfd != -1) {
-            close(cfd);
-            cfd = -1;
-        }
+        // Client socket descriptor
+        int *cfd = malloc(sizeof(int));
 
         // check for control-c
         if (signaled)    stop();
 
         // check whether client has connected
-        if (connected()) {
+        if (cfd != NULL && (*cfd = connected()) != -1) {
+            pthread_t tid;
             pthread_attr_init(&tattr);
-            if (pthread_create(&tid, &tattr, process, NULL)) {
-                error(500);
+            if (pthread_create(&tid, NULL, process, cfd)) {
+                error(*cfd, 500);
                 continue;
             }
             printf("On Thread: %u\n", (unsigned int)tid);
-            pthread_join(tid, NULL);
+            pthread_detach(tid);
         }
     }
 }

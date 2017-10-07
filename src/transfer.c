@@ -24,18 +24,18 @@
 /**
  * Transfers file at path with specified type to client.
  */
-void transfer(const char* path, const char* type)
+void transfer(int cfd, const char* path, const char* type)
 {
     // ensure path is readable
     if (access(path, R_OK) == -1) {
-        error(403);
+        error(cfd, 403);
         return;
     }
 
     // open file
     FILE* file = fopen(path, "r");
     if (file == NULL) {
-        error(500);
+        error(cfd, 500);
         return;
     }
 
@@ -43,7 +43,7 @@ void transfer(const char* path, const char* type)
     char* content;
     size_t length;
     if (load(file, &content, &length) == false) {
-        error(500);
+        error(cfd, 500);
         return;
     }
 
@@ -55,12 +55,12 @@ void transfer(const char* path, const char* type)
     int headers_len = strlen(template) + strlen(type) - 1;
     char headers[headers_len];
     if (snprintf(headers, headers_len, template, type) < 0) {
-        error(500);
+        error(cfd, 500);
         return;
     }
 
     // respond with file's content
-    respond(200, headers, content, length);
+    respond(cfd, 200, headers, content, length);
 
     // free file's content
     free(content);

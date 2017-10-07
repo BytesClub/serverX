@@ -24,18 +24,14 @@
 
 extern char* root;
 
-
 /**
  * Process for extacting client request and respond
  * To be used by each thread independently
  * Reference: http://man7.org/linux/man-pages/man7/pthreads.7.html
  */
 void* process(void *args) {
-    // NULL argument must be given
-    if (args != NULL) {
-        error(500);
-        pthread_exit((void*)1);
-    }
+    int cfd = *((int *) args);
+    free(args);
 
     // a message and its length
     char* message = NULL;
@@ -45,15 +41,16 @@ void* process(void *args) {
     char* path = NULL;
 
     // check for request
-    if (request(&message, &length)) {
+    if (request(cfd, &message, &length)) {
         // extract message's request-line
         // http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html
         const char* haystack = message;
         const char* needle = strstr(haystack, "\r\n");
         if (needle == NULL) {
-            error(500);
+            error(cfd, 500);
             free(message), message = NULL;
-            pthread_exit((void*)2);
+            close(cfd);
+            return NULL;
         }
         char line[needle - haystack + 2 + 1];
         strncpy(line, haystack, needle - haystack + 2);
@@ -65,21 +62,23 @@ void* process(void *args) {
         // parse request-line
         char abs_path[LimitRequestLine + 1];
         char query[LimitRequestLine + 1];
-        if (parse(line, abs_path, query)) {
+        if (parse(cfd, line, abs_path, query)) {
             // URL-decode absolute-path
             char* p = urldecode(abs_path);
             if (p == NULL) {
-                error(500);
+                error(cfd, 500);
                 free(message), message = NULL;
-                pthread_exit((void*)2);
+                close(cfd);
+                return NULL;
             }
 
             // resolve absolute-path to local path
             path = malloc(strlen(root) + strlen(p) + 1);
             if (path == NULL) {
-                error(500);
+                error(cfd, 500);
                 free(message), message = NULL;
-                pthread_exit((void*)2);
+                close(cfd);
+                return NULL;
             }
             strcpy(path, root);
             strcat(path, p);
@@ -87,10 +86,11 @@ void* process(void *args) {
 
             // ensure path exists
             if (access(path, F_OK) == -1) {
-                error(404);
+                error(cfd, 404);
                 free(path), path = NULL;
                 free(message), message = NULL;
-                pthread_exit((void*)2);
+                close(cfd);
+                return NULL;
             }
 
             // if path to directory
@@ -101,10 +101,11 @@ void* process(void *args) {
                     char uri[strlen(abs_path) + 1 + 1];
                     strcpy(uri, abs_path);
                     strcat(uri, "/");
-                    redirect(uri);
+                    redirect(cfd, uri);
                     free(path), path = NULL;
                     free(message), message = NULL;
-                    pthread_exit((void*)0);
+                    close(cfd);
+                    return NULL;
                 }
 
                 // use path/index.php or path/index.html, if present, instead of directory's path
@@ -114,32 +115,34 @@ void* process(void *args) {
                     free(message), message = NULL;
                 } else {
                     // list contents of directory
-                    list(path);
+                    list(cfd, path);
                     free(path), path = NULL;
                     free(message), message = NULL;
-                    pthread_exit((void*)0);
+                    close(cfd);
+                    return NULL;
                 }
             }
 
             // look up MIME type for file at path
             const char* type = lookup(path);
             if (type == NULL) {
-                error(501);
+                error(cfd, 501);
                 free(path), path = NULL;
                 free(message), message = NULL;
-                pthread_exit((void*)2);
+                close(cfd);
+                return NULL;
             }
 
             // interpret PHP script at path
             if (strcasecmp("text/x-php", type) == 0) {
-                interpret(path, query);
+                interpret(cfd, path, query);
                 free(path), path = NULL;
                 free(message), message = NULL;
             }
 
             // transfer file at path
             else {
-                transfer(path, type);
+                transfer(cfd, path, type);
                 free(path), path = NULL;
                 free(message), message = NULL;
             }
@@ -158,5 +161,8 @@ void* process(void *args) {
         message = NULL;
     }
 
-    pthread_exit((void*)0);
+    // Close client socket
+    close(cfd);
+
+    return NULL;
 }

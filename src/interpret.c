@@ -24,11 +24,11 @@
 /**
  * Interprets PHP file at path using query string.
  */
-void interpret(const char* path, const char* query)
+void interpret(int cfd, const char* path, const char* query)
 {
     // ensure path is readable
     if (access(path, R_OK) == -1) {
-        error(403);
+        error(cfd, 403);
         return;
     }
 
@@ -38,13 +38,13 @@ void interpret(const char* path, const char* query)
     int command_len = strlen(format) + strlen(path) + strlen(query) - 3;
     char command[command_len];
     if (snprintf(command, command_len, format, query, path) < 0) {
-        error(500);
+        error(cfd, 500);
         return;
     }
 
     FILE* file = popen(command, "r");
     if (file == NULL) {
-        error(500);
+        error(cfd, 500);
         return;
     }
 
@@ -52,7 +52,7 @@ void interpret(const char* path, const char* query)
     char* content;
     size_t length;
     if (load(file, &content, &length) == false) {
-        error(500);
+        error(cfd, 500);
         return;
     }
 
@@ -64,7 +64,7 @@ void interpret(const char* path, const char* query)
     char* needle = strstr(haystack, "\r\n\r\n");
     if (needle == NULL) {
         free(content);
-        error(500);
+        error(cfd, 500);
         return;
     }
 
@@ -74,7 +74,7 @@ void interpret(const char* path, const char* query)
     headers[needle + 2 - haystack] = '\0';
 
     // respond with interpreter's content
-    respond(200, headers, needle + 4, length - (needle - haystack + 4));
+    respond(cfd, 200, headers, needle + 4, length - (needle - haystack + 4));
 
     // free interpreter's content
     free(content);
