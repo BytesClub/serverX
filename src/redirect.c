@@ -24,14 +24,14 @@
 /**
  * Redirects client to uri.
  */
-void redirect(const char* uri)
+void redirect(int cfd, const char* uri)
 {
     char* template = "Location: %s\r\n";
     int headers_len = strlen(template) + strlen(uri) - 1;
     char headers[headers_len];
     if (snprintf(headers, headers_len, template, uri) < 0) {
-        error(500);
+        error(cfd, 500);
         return;
     }
-    respond(301, headers, NULL, 0);
+    respond(cfd, 301, headers, NULL, 0);
 }

@@ -27,11 +27,11 @@ extern char* root;
 /**
  * Responds to client with directory listing of path.
  */
-void list(const char* path)
+void list(int cfd, const char* path)
 {
     // ensure path is readable and executable
     if (access(path, R_OK | X_OK) == -1) {
-        error(403);
+        error(cfd,403);
         return;
     }
 
@@ -56,7 +56,7 @@ void list(const char* path)
         if (name == NULL) {
             free(list);
             freedir(namelist, n);
-            error(500);
+            error(cfd, 500);
             return;
         }
 
@@ -68,7 +68,7 @@ void list(const char* path)
             free(name);
             freedir(namelist, n);
             free(list);
-            error(500);
+            error(cfd, 500);
             return;
         }
 
@@ -82,7 +82,7 @@ void list(const char* path)
             free(name);
             freedir(namelist, n);
             free(list);
-            error(500);
+            error(cfd, 500);
             return;
         }
 
@@ -107,7 +107,7 @@ void list(const char* path)
     {
         free(list);
         closedir(dir);
-        error(500);
+        error(cfd, 500);
         return;
     }
 
@@ -119,5 +119,5 @@ void list(const char* path)
 
     // respond with list
     char* headers = "Content-Type: text/html\r\n";
-    respond(200, headers, body, length);
+    respond(cfd, 200, headers, body, length);
 }

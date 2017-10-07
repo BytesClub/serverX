@@ -24,7 +24,7 @@
 /**
  * Responds to client with specified status code.
  */
-void error(unsigned short code)
+void error(int cfd, unsigned short code)
 {
     // determine code's reason-phrase
     const char* phrase = reason(code);
@@ -46,5 +46,5 @@ void error(unsigned short code)
 
     // respond with error
     char* headers = "Content-Type: text/html\r\n";
-    respond(code, headers, body, length);
+    respond(cfd, code, headers, body, length);
 }

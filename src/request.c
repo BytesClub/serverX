@@ -20,19 +20,12 @@
 // include header
 #include <serverX.h>
 
-// global variables
-
-extern int cfd;
-
 /**
  * Reads (without blocking) an HTTP request's headers into memory dynamically allocated on heap.
  * Stores address thereof in *message and length thereof in *length.
  */
-bool request(char** message, size_t* length)
+bool request(int cfd, char** message, size_t* length)
 {
-    // ensure socket is open
-    if (cfd == -1)    return false;
-
     // initialize message and its length
     *message = NULL;
     *length = 0;

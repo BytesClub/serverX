@@ -20,14 +20,10 @@
 // include header
 #include <serverX.h>
 
-// global variables
-
-extern int cfd;
-
 /**
  * Responds to a client with status code, headers, and body of specified length.
  */
-void respond(int code, const char* headers, const char* body, size_t length)
+void respond(int cfd, int code, const char* headers, const char* body, size_t length)
 {
     // determine Status-Line's phrase
     // http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6.1
