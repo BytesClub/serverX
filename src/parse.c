@@ -20,16 +20,12 @@
 // include header
 #include <serverX.h>
 
-// global variables
-
-extern int cfd;
-
 /**
  * Parses a request-line, storing its absolute-path at abs_path
  * and its query string at query, both of which are assumed
  * to be at least of length LimitRequestLine + 1.
  */
-bool parse(const char* line, char* abs_path, char* query)
+bool parse(int cfd, const char* line, char* abs_path, char* query)
 {
     if (cfd == -1 || line == NULL) {
         return false;
@@ -43,15 +39,15 @@ bool parse(const char* line, char* abs_path, char* query)
     strcpy(toParse, line);
     char *peek = strtok(toParse, " ");
     if (strcmp(peek, "GET")) {
-        error(405);
+        error(cfd, 405);
         return false;
     }
     peek = strtok(NULL, " ");
     if (*peek != '/') {
-        error(501);
+        error(cfd, 501);
         return false;
     } else if (strchr(peek, '\"')) {
-        error(400);
+        error(cfd, 400);
         return false;
     }
     strcpy(query, "");
@@ -65,7 +61,7 @@ bool parse(const char* line, char* abs_path, char* query)
     strncpy(abs_path, peek, m);
     peek = strtok(NULL, " ");
     if (strcmp(peek, "HTTP/1.1\r\n")) {
-        error(505);
+        error(cfd, 505);
         return false;
     }
     return true;

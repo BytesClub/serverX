@@ -143,16 +143,17 @@
  * @ function:       connected
  * @ brief:          Checks (without blocking) whether a client has connected
  *                   to the server.
- * @ returns:        True iff so, else false.
+ * @ returns:        Client socket descriptor, -1 if error.
  */
-bool connected(void);
+int connected(void);
 
 /**
  * @ function:       error
  * @ brief:          Responds to client with specified status code.
+ * @ param cfd:      Client socket descriptor.
  * @ param code:     The HTTP error code.
  */
-void error(unsigned short code);
+void error(int cfd, unsigned short code);
 
 /**
  * @ function:       freedir
@@ -190,17 +191,19 @@ char* indexes(const char* path);
 /**
  * @ function:      interpret
  * @ brief:         Interprets PHP file at path using query string.
+ * @ param cfd:     Client socket descriptor.
  * @ param path:    Path to PHP script.
  * @ param query:   Query found with URL (optional).
  */
-void interpret(const char* path, const char* query);
+void interpret(int cfd, const char* path, const char* query);
 
 /**
  * @ function:      list
  * @ brief:         Responds to client with directory listing of path.
+ * @ param cfd:     Client socket descriptor.
  * @ param path:    Requested path from URL.
  */
-void list(const char* path);
+void list(int cfd, const char* path);
 
 /**
  * @ function:      load
@@ -226,12 +229,13 @@ const char* lookup(const char* path);
  * @ brief:         Parses a request-line, storing its absolute-path at abs_path
  *                  and its query string at query, both of which are assumed
  *                  to be at least of length LimitRequestLine + 1.
+ * @ param cfd:     Client socket descriptor.
  * @ param line:    HTTP request with URL.
  * @ param path:    Path extracted from URL.
  * @ param query:   Query extracted from URL.
  * @ returns:       True iff action successful, false otherwise.
  */
-bool parse(const char* line, char* path, char* query);
+bool parse(int cfd, const char* line, char* path, char* query);
 
 /**
  * @ function:      process
@@ -254,20 +258,22 @@ const char* reason(unsigned short code);
 /**
  * @ function:      redirect
  * @ brief:         Redirects client to uri.
+ * @ param cfd:     Client socket descriptor.
  * @ param uri:     URL that it has to redirect.
  */
-void redirect(const char* uri);
+void redirect(int cfd, const char* uri);
 
 /**
  * @ function:      request
  * @ brief:         Reads (without blocking) an HTTP request's headers into
  *                  memory dynamically allocated on heap.
  *                  Stores address in *message and length in *length.
+ * @ param cfd:     Client socket descriptor.
  * @ param message: Pointer to the buffer.
  * @ param length:  Pointer to the integer holding the size of buffer.
  * @ returns:       True iff action successful, false otherwise.
  */
-bool request(char** message, size_t* length);
+bool request(int cfd, char** message, size_t* length);
 
 /**
  * @ function:      respond
@@ -278,7 +284,7 @@ bool request(char** message, size_t* length);
  * @ param body:    Response body from buffer.
  * @ param length:  Size of buffer.
  */
-void respond(int code, const char* headers, const char* body, size_t length);
+void respond(int cfd, int code, const char* headers, const char* body, size_t length);
 
 /**
  * @ function:      start
@@ -297,10 +303,11 @@ void stop(void);
 /**
  * @ function:      transfer
  * @ brief:         Transfers file at path with specified type to client.
+ * @ param cfd:     Client socket descriptor.
  * @ param path:    Path of the file source.
  * @ param type:    MIME-type of the file.
  */
-void transfer(const char* path, const char* type);
+void transfer(int cfd, const char* path, const char* type);
 
 /**
  * @ function:      urldecode
