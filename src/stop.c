@@ -45,5 +45,5 @@ void stop(void)
     if (sfd != -1)    close(sfd);
 
     // stop server
-    exit(errsv);
+    pthread_exit(0);
 }

@@ -26,9 +26,6 @@ char* root = NULL;
 // file descriptor for sockets
 int sfd = -1;
 
-// flag indicating whether control-c has been heard
-bool signaled = false;
-
 int main(int argc, char* argv[])
 {
     // a global variable defined in errno.h that's "set by system
@@ -81,9 +78,6 @@ int main(int argc, char* argv[])
     while (true) {
         // Client socket descriptor
         int *cfd = malloc(sizeof(int));
-
-        // check for control-c
-        if (signaled)    stop();
 
         // check whether client has connected
         if (cfd != NULL && (*cfd = connected()) != -1) {

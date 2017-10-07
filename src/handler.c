@@ -20,15 +20,11 @@
 // include header
 #include <serverX.h>
 
-// global variables
-
-extern bool signaled;
-
 /**
  * Handles signals.
  */
 void handler(int signal)
 {
     // control-c
-    if (signal == SIGINT)    signaled = true;
+    stop();
 }
