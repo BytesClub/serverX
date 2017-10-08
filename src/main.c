@@ -72,6 +72,12 @@ int main(int argc, char* argv[])
         return 2;
     }
 
+    // Check if we have permission to use the port
+    if (strcmp(OS_NAME, "GNU/Linux") == 0 && port < 1024 && getuid()) {
+        printf("To bind ports lower than 1024 you must be root.\n");
+        return 1;
+    }
+
     // start server
     start(port, argv[optind]);
 
