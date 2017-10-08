@@ -49,3 +49,27 @@
 * **Closed By:** [Pinak Roy Chowdhury](https://github.com/Pinak17)
 * **Closed On:** Aug 21, 2017, 12:21 PM GMT
 * **Patch Approved By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
+
+### [14. Thread: The server should be able to handle multiple requests at the same time](https://github.com/BytesClub/serverX/issues/14)
+
+* **Opened On:** Oct 8, 2017, 2:42 AM GMT
+* **Labels:** `Enhancement`
+* **Closed By:** [Rubén Calvo](https://github.com/rubencm)
+* **Closed On:** Oct 8, 2017, 2:21 PM GMT
+* **Patch Approved By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
+
+### [16. Handler: The server ends killing current threads](https://github.com/BytesClub/serverX/issues/16)
+
+* **Opened On:** Oct 8, 2017, 3:20 AM GMT
+* **Labels:** `Bug`
+* **Closed By:** [Rubén Calvo](https://github.com/rubencm)
+* **Closed On:** Oct 8, 2017, 2:37 PM GMT
+* **Patch Approved By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
+
+### [21. Permission: Check if the current user has privileges to bind certain ports on Linux](https://github.com/BytesClub/serverX/issues/21)
+
+* **Opened On:** Oct 8, 2017, 4:47 AM GMT
+* **Labels:** `Bug`
+* **Closed By:** [Rubén Calvo](https://github.com/rubencm)
+* **Closed On:** Oct 8, 2017, 2:45 PM GMT
+* **Patch Approved By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
