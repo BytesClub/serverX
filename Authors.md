@@ -17,7 +17,7 @@
     community Bytes Club.
 
     I am currently learning about AI and Machine Learning, Natural
-    Language Processing, Infromation Retrieval, Elliptical Cryptography
+    Language Processing, Information Retrieval, Elliptical Cryptography
     and have an interest in pursuing research work on those fields!
     ```
 * **GitHub Link:** [GitHub/Progyan1997](https://github.com/Progyan1997)
