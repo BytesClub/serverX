@@ -45,14 +45,21 @@ int main(int argc, char* argv[])
 
     // parse command-line arguments
     int opt;
-    while ((opt = getopt(argc, argv, "hp:")) != -1) {
+    while ((opt = getopt(argc, argv, "hpl:")) != -1) {
         switch (opt) {
             // -p port
             case 'p':
                 port = atoi(optarg);
                 break;
 
-            // -h
+            // -l logfile
+            case 'l':
+                if (freopen(optarg, "a+", stdout) == NULL) {
+                    fprintf(stderr, "Failed to open logfile %s\n", optarg);
+                }
+                break;
+
+            // -h help option
             case 'h':
             case '?':
             default:
@@ -100,7 +107,7 @@ int main(int argc, char* argv[])
 
 // Help Function: usage string
 static void help(void) {
-    fprintf(stderr, "Usage: %s [-p port] /path/to/root\n", getprogname());
+    fprintf(stderr, "Usage: %s [-p port] [-l logfile] /path/to/root\n", getprogname());
     exit(EXIT_FAILURE);
     /* NONREACHABLE */
 }
