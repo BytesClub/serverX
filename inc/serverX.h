@@ -48,14 +48,14 @@
 
 // header files
 
-#ifndef __getopt_h
-    #include <getopt.h>
-#endif
 #ifndef __dirent_h
     #include <dirent.h>
 #endif
 #ifndef __errno_h
     #include <errno.h>
+#endif
+#ifndef __getopt_h
+    #include <getopt.h>
 #endif
 #ifndef __limits_h
     #include <limits.h>
@@ -74,6 +74,7 @@
 #endif
 #ifndef __stdlib_h
     #include <stdlib.h>
+    #include <bsd/stdlib.h>
 #endif
 #ifndef __string_h
     #include <string.h>

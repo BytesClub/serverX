@@ -34,12 +34,17 @@ bool load(FILE* file, char** content, size_t* length)
         rewind(file);
     }
     if (*length != 0) {
-        *content = (char *)malloc(*length * sizeof(char));
-        fread(*content, sizeof(char), *length, file);
+        *content = malloc(*length * sizeof(char));
+        size_t bytes_read = fread(*content, sizeof(char), *length, file);
+        if (bytes_read && bytes_read < *length) {
+            free(*content);
+            content = NULL, *length = 0;
+            return false;
+        }
     } else {
         int c;
         while((c = fgetc(file)) != EOF) {
-            char *buffer = (char *)malloc((*length + 1) * sizeof(char));
+            char* buffer = malloc((*length + 1) * sizeof(char));
             memcpy(buffer, *content, *length);
             free(*content);
             *(buffer + *length) = c;

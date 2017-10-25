@@ -20,6 +20,9 @@
 // include header
 #include <serverX.h>
 
+// Help function
+static void help(void);
+
 // server's root
 char* root = NULL;
 
@@ -32,6 +35,7 @@ int main(int argc, char* argv[])
     // calls and some library functions [to a nonzero value]
     // in the event of an error to indicate what went wrong"
     errno = 0;
+    setprogname(argv[0]);
 
     // Thread ID and Attributes
     pthread_attr_t tattr;
@@ -39,22 +43,20 @@ int main(int argc, char* argv[])
     // default to port 8080
     int port = 8080;
 
-    // usage
-    const char* usage = "Usage: serverX [-p port] /path/to/root";
-
     // parse command-line arguments
     int opt;
     while ((opt = getopt(argc, argv, "hp:")) != -1) {
         switch (opt) {
-            // -h
-            case 'h':
-                printf("%s\n", usage);
-                return 0;
-
             // -p port
             case 'p':
                 port = atoi(optarg);
                 break;
+
+            // -h
+            case 'h':
+            case '?':
+            default:
+                help();
         }
     }
 
@@ -62,16 +64,13 @@ int main(int argc, char* argv[])
     if (port < 0 || port > SHRT_MAX || argv[optind] == NULL ||
         strlen(argv[optind]) == 0) {
         // announce usage
-        printf("%s\n", usage);
-
-        // return 2 just like bash's builtins
-        return 2;
+        help();
     }
 
     // Check if we have permission to use the port
     if (strcmp(OS_NAME, "GNU/Linux") == 0 && port < 1024 && getuid()) {
-        printf("To bind ports lower than 1024 you must be root.\n");
-        return 1;
+        fprintf(stderr, "To bind ports lower than 1024 you must be root.\n");
+        return 2;
     }
 
     // start server
@@ -97,4 +96,11 @@ int main(int argc, char* argv[])
             pthread_detach(tid);
         }
     }
+}
+
+// Help Function: usage string
+static void help(void) {
+    fprintf(stderr, "Usage: %s [-p port] /path/to/root\n", getprogname());
+    exit(EXIT_FAILURE);
+    /* NONREACHABLE */
 }

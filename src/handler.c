@@ -26,5 +26,7 @@
 void handler(int signal)
 {
     // control-c
-    stop();
+    if (signal == SIGINT) {
+        stop();
+    }
 }

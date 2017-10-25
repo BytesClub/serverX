@@ -31,7 +31,7 @@ extern int sfd;
 void stop(void)
 {
     // preserve errno across this function's library calls
-    int errsv = errno;
+    // int errsv = errno;
 
     // announce stop
     printf("\033[33m");
