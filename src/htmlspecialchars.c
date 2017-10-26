@@ -24,13 +24,16 @@
  * Escapes string for HTML. Returns dynamically allocated memory for escaped
  * string that must be deallocated by caller.
  */
-static bool helperescape(const char* entity, char* target, int* new)
+static void helperescape(const char* entity, char** target, int* new)
 {
-    *new += strlen(entity);
-    target = realloc(target, *new);
-    if (target == NULL)    return false;
-    strcat(target, entity);
-    return true;
+    int new_len = strlen(entity);
+    char* new_target = malloc(*new + new_len);
+    if (new_target == NULL)    return;
+    memcpy(new_target, *target, *new);
+    strncat(new_target, entity, new_len);
+    free(*target);
+    *target = new_target;
+    *new += new_len;
 }
 
 char* htmlspecialchars(const char* s)
@@ -45,18 +48,24 @@ char* htmlspecialchars(const char* s)
 
     // iterate over characters in s, escaping as needed
     for (int i = 0, old = strlen(s), new = old; i < old; i++) {
-        if (s[i] == '&') {
-            helperescape("&amp;", t, &new);
-        } else if (s[i] == '"') {
-            helperescape("&quot;", t, &new);
-        } else if (s[i] == '\'') {
-            helperescape("&#039;", t, &new);
-        } else if (s[i] == '<') {
-            helperescape("&lt;", t, &new);
-        } else if (s[i] == '>') {
-            helperescape("&gt;", t, &new);
-        } else {
-            strncat(t, s + i, 1);
+        switch (s[i]) {
+            case '&':
+                helperescape("&amp;", &t, &new);
+                break;
+            case '\"':
+                helperescape("&quot;", &t, &new);
+                break;
+            case '\'':
+                helperescape("&#039;", &t, &new);
+                break;
+            case '<':
+                helperescape("&lt;", &t, &new);
+                break;
+            case '>':
+                helperescape("&gt;", &t, &new);
+                break;
+            default:
+                strncat(t, s + i, 1);
         }
 
         // memory error

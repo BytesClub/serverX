@@ -127,6 +127,7 @@ void* process(void *args) {
             // look up MIME type for file at path
             const char* type = lookup(path);
             if (type == NULL) {
+                // invalid file type
                 error(cfd, 501);
                 free(path), path = NULL;
                 free(message), message = NULL;
