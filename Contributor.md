@@ -73,3 +73,10 @@
 * **Closed By:** [Rubén Calvo](https://github.com/rubencm)
 * **Closed On:** Oct 8, 2017, 2:45 PM GMT
 * **Patch Approved By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
+
+### [24. Log: Log all Incoming Request and respective System Response](https://github.com/BytesClub/serverX/issues/24)
+
+* **Opened On:** Oct 12, 2017, 7:08 PM GMT
+* **Labels:** `Enhancement`
+* **Closed By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
+* **Closed On:** Oct 25, 2017, 11:37 PM GMT

@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * Interprets PHP file at path using query string.
  */

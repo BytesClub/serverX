@@ -28,7 +28,8 @@ DIR = -I$(INC)
 VPATH = $(SRC)
 
 # Executable
-EXE = serverX
+EXE = $(BIN)/$(PROG)
+PROG = serverX
 
 # Directories
 BIN = bin
@@ -58,7 +59,7 @@ endif
 OBJECT = $(addprefix $(BIN)/, $(notdir $(SOURCE:.c=.o)))
 
 # Default Target
-$(BIN)/$(EXE): $(OBJECT)
+$(EXE): $(OBJECT)
 	$(CC) $^ -o $@ $(LFLAGS)
 
 $(BIN)/%.o: %.c $(HEADER)
@@ -66,7 +67,7 @@ $(BIN)/%.o: %.c $(HEADER)
 	$(CC) $(CFLAGS) $(DIR) -c $< -o $@
 
 # Test Option
-test: $(BIN)/$(EXE) $(TST)
+test: $(EXE) $(TST)
 	@echo "Testing of application started."
 	$^
 
@@ -80,4 +81,4 @@ help:
 clean:
 	@rm -rf core $(EXE) bin *.o *.exe
 
-.PHONY: test clean
+.PHONY: test help clean

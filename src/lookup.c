@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * Returns MIME type for supported extensions, else NULL.
  */

@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * Frees memory allocated by scandir.
  */

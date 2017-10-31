@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * URL-decodes string, returning dynamically allocated memory for decoded string
  * that must be deallocated by caller.

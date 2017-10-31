@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
     // accept connections one at a time
     while (true) {
         // Client socket descriptor
-        int *cfd = malloc(sizeof(int));
+        int* cfd = malloc(sizeof(int));
 
         // check whether client has connected
         if (cfd != NULL && (*cfd = connected()) != -1) {
@@ -106,7 +106,8 @@ int main(int argc, char* argv[])
 }
 
 // Help Function: usage string
-static void help(void) {
+static void help(void)
+{
     fprintf(stderr, "Usage: %s [-p port] [-l logfile] /path/to/root\n", getprogname());
     exit(EXIT_FAILURE);
     /* NONREACHABLE */

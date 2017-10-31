@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * Transfers file at path with specified type to client.
  */

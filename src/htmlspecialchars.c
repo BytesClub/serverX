@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * Escapes string for HTML. Returns dynamically allocated memory for escaped
  * string that must be deallocated by caller.

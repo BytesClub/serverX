@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * Checks, in order, whether index.php or index.html exists inside of path.
  * Returns path to first match if so, else NULL.

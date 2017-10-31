@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * Responds to client with specified status code.
  */

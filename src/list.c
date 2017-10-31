@@ -21,7 +21,6 @@
 #include <serverX.h>
 
 // global variables
-
 extern char* root;
 
 /**

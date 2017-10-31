@@ -21,6 +21,7 @@
     and have an interest in pursuing research work on those fields!
     ```
 * **GitHub Link:** [GitHub/Progyan1997](https://github.com/Progyan1997)
+* **Quora Link:** [Progyan Bhattacharya](https://www.quora.com/profile/Progyan-Bhattacharya)
 * **Linkedin:** [Progyan Bhattacharya](https://www.linkedin.com/in/progyan-bhattacharya/)
 
 ## Projects

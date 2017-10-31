@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * Returns status code's reason phrase.
  *

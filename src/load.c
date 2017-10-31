@@ -20,7 +20,6 @@
 // include header
 #include <serverX.h>
 
-
 /**
  * Loads a file into memory dynamically allocated on heap.
  * Stores address thereof in *content and length thereof in *length.
