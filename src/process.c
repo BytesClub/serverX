@@ -134,13 +134,11 @@ void* process(void *args) {
 
             // interpret PHP script at path
             if (strcasecmp("text/x-php", type) == 0) {
-                interpret(cfd, path, query);
+                interpret(cfd, "PHP", path, query);
                 free(path), path = NULL;
                 free(message), message = NULL;
-            }
-
-            // transfer file at path
-            else {
+            } else {
+                // transfer file at path
                 transfer(cfd, path, type);
                 free(path), path = NULL;
                 free(message), message = NULL;

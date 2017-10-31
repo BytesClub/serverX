@@ -191,12 +191,13 @@ char* indexes(const char* path);
 
 /**
  * @ function:      interpret
- * @ brief:         Interprets PHP file at path using query string.
+ * @ brief:         Interprets Script file at path using query string.
  * @ param cfd:     Client socket descriptor.
+ * @ param type:    Type of the Script delivered.
  * @ param path:    Path to PHP script.
  * @ param query:   Query found with URL (optional).
  */
-void interpret(int cfd, const char* path, const char* query);
+void interpret(int cfd, const char* type, const char* path, const char* query);
 
 /**
  * @ function:      list
