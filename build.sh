@@ -1,8 +1,25 @@
-#!/bin/sh
+#!/bin/bash
 
-# OS_NAME.sh
-# To find the distribution name and version for Linux OS
+# Copyright 2017 The serverX Authors. All Rights Reserved.
+# Maintainer: Bytes Club (https://bytesclub.github.io)<bytes-club@googlegroups.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
 
+# Build support file
+# build.sh
+
+# Get Platform details
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     PLATFORM="Linux"
     if [ -f /etc/os-release ]; then
@@ -62,5 +79,16 @@ elif [[ "$OSTYPE" == "freebsd"* ]]; then
     VER=$(uname -r)
 fi
 
-# Echo result
-echo "$PLATFORM/$OS/$VER"
+# Fetch template
+INC="inc"
+TMP="build.inc.h"
+OUT="build.h"
+tmp=$(cat $INC/$TMP)
+
+# Output result
+echo "$tmp
+
+#define PLATFORM \"$PLATFORM/$OS/$VER\"
+#define BUILD_TIME \"$(date)\"
+
+#endif" > $INC/$OUT

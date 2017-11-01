@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
     }
 
     // Check if we have permission to use the port
-    if (strcmp(OS_NAME, "GNU/Linux") == 0 && port < 1024 && getuid()) {
+    if (strcmp(KERNEL, "GNU/Linux") == 0 && port < 1024 && getuid()) {
         fprintf(stderr, "To bind ports lower than 1024 you must be root.\n");
         return 2;
     }
@@ -108,7 +108,10 @@ int main(int argc, char* argv[])
 // Help Function: usage string
 static void help(void)
 {
-    fprintf(stderr, "Usage: %s [-p port] [-l logfile] /path/to/root\n", getprogname());
+    fprintf(stderr, "Usage: %s [-p port] [-l logfile] /path/to/root\n\
+    Copyright (c) 2017 serverX Authors, Bytes Club Apache 2.0 Licensed\n\
+    Build Version: %s  Build Platform: %s  Build Time: %s\n",
+    getprogname(), serverX_VERSION, PLATFORM, BUILD_TIME);
     exit(EXIT_FAILURE);
     /* NONREACHABLE */
 }

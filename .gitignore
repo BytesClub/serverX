@@ -13,6 +13,7 @@
 *.exp
 
 # Precompiled Headers
+inc/build.h
 *.gch
 *.pch
 

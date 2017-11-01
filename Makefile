@@ -39,7 +39,7 @@ SRC = src
 TST = public
 
 # Header(s)
-HEADER = $(wildcard $(INC)/*.h)
+HEADER = $(INC)/serverX.h $(INC)/build.h
 
 # Source(s)
 SOURCE = $(wildcard $(SRC)/*.c)
@@ -48,6 +48,7 @@ SOURCE = $(wildcard $(SRC)/*.c)
 ifeq ($(OS),Windows_NT)
 	VPATH += $(LIB)
 	SOURCE += $(wildcard $(LIB)/*.c)
+	HEADER += $(INC)/winserverX.h
 	LFLAGS += -lws2_32 -lwsock32
 endif
 
@@ -61,6 +62,9 @@ $(EXE): $(OBJECT)
 $(BIN)/%.o: %.c $(HEADER)
 	@mkdir -p $(BIN)
 	$(CC) $(CFLAGS) $(DIR) -c $< -o $@
+
+$(INC)/build.h: $(SOURCE)
+	./build.sh
 
 # Test Option
 test: $(EXE) $(TST)

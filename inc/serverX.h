@@ -48,6 +48,9 @@
 
 // header files
 
+#ifndef __build_h
+    #include <build.h>
+#endif
 #ifndef __dirent_h
     #include <dirent.h>
 #endif
@@ -97,7 +100,7 @@
 
 // Windows specific files
 #if defined(_WIN32) || defined(__WIN32__)
-    #define OS_NAME "Windows NT"
+    #define KERNEL "Windows NT"
     #define WIN32_LEAN_AND_MEAN
     #ifdef _WIN32_WINNT
         #undef _WIN32_WINNT
@@ -124,7 +127,7 @@
 
 // Linux specific files
 #else
-    #define OS_NAME "GNU/Linux"
+    #define KERNEL "GNU/Linux"
     #ifndef __arpa_inet_h
         #include <arpa/inet.h>
     #endif

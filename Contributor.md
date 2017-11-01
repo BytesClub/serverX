@@ -50,6 +50,13 @@
 * **Closed On:** Aug 21, 2017, 12:21 PM GMT
 * **Patch Approved By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
 
+### [12. HTTP Header: Send Server Configuration and Platform Information](https://github.com/BytesClub/serverX/issues/12)
+
+* **Opened On:** Oct 3, 2017, 11:59 PM GMT
+* **Labels:** `Hacktoberfest`
+* **Closed By:** [Progyan Bhattacharya](https://github.com/Progyan1997)
+* **Closed On:** Nov 1, 2017, 11:52 PM GMT
+
 ### [14. Thread: The server should be able to handle multiple requests at the same time](https://github.com/BytesClub/serverX/issues/14)
 
 * **Opened On:** Oct 8, 2017, 2:42 AM GMT
