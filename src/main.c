@@ -25,9 +25,12 @@ static void help(void);
 
 // server's root
 char* root = NULL;
+int root_len = 0;
 
 // file descriptor for sockets
+
 int sfd = -1;
+int* cfd;
 
 int main(int argc, char* argv[])
 {
@@ -89,22 +92,34 @@ int main(int argc, char* argv[])
     // accept connections one at a time
     while (true) {
         // Client socket descriptor
-        int* cfd = malloc(sizeof(int));
+        cfd = malloc(sizeof(int));
 
         // check whether client has connected
-        if (cfd != NULL && (*cfd = connected()) != -1) {
+        if (cfd != NULL) {
+            if ((*cfd = connected()) == -1) {
+                free(cfd), cfd = NULL;
+                continue;
+            }
             pthread_t tid;
             pthread_attr_init(&tattr);
             if (pthread_create(&tid, NULL, process, cfd)) {
+                int errsv = errno;
+                time_t epoch = time(NULL);
+                printf("\033[31m");
+                printf("%sFollowing error has occured while creating thread\n%s",
+                ctime(&epoch), strerror(errsv));
+                printf("\033[39m\n");
                 error(*cfd, 500);
+                free(cfd), cfd = NULL;
                 continue;
             }
-            time_t epoch = time(NULL);
-            printf("%sClient ID: %u  Thread ID: %u\n", ctime(&epoch), (unsigned int)(*cfd), (unsigned int)tid);
-            fflush(stdout);
             pthread_detach(tid);
+            cfd = NULL;
         }
     }
+
+    // default return
+    return 0;
 }
 
 // Help Function: usage string

@@ -53,25 +53,25 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     fi
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-        # Mac OSX
-        ...
+    # Mac OSX
+    ...
 
 elif [[ "$OSTYPE" == "cygwin" ]]; then
+    # POSIX compatibility layer and Linux environment emulation for Windows
     PLATFORM="Windows"
-        # POSIX compatibility layer and Linux environment emulation for Windows
-        if type cmd /c ver >/dev/null 2>&1; then
-            OS=$(cmd /c ver)
-        else
-            # Fall back to uname
-            OS=$(uname -s)
-            VER=$(uname -r)
-        fi
+    if type cmd /c ver >/dev/null 2>&1; then
+        OS=$(cmd /c ver)
+    else
+        # Fall back to uname
+        OS=$(uname -s)
+        VER=$(uname -r)
+    fi
 
 elif [[ "$OSTYPE" == "msys" ]]; then
+    # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
     PLATFORM="Windows"
-        # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
-        OS=$(systeminfo | sed -n 's/^OS Name:[[:blank:]]*//p')
-        VER=$(systeminfo | sed -n 's/^OS Version:[[:blank:]]*//p')
+    OS=$(systeminfo | sed -n 's/^OS Name:[[:blank:]]*//p')
+    VER=$(systeminfo | sed -n 's/^OS Version:[[:blank:]]*//p')
 
 elif [[ "$OSTYPE" == "freebsd"* ]]; then
     PLATFORM="FreeBSD"

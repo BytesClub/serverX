@@ -39,7 +39,7 @@ void interpret(int cfd, const char* type, const char* path, const char* query)
 
     // open pipe to PHP interpreter
     const char* format = "QUERY_STRING=\"%s\" REDIRECT_STATUS=200 SCRIPT_FILENAME=\
-\"%s\" REQUEST_METHOD=\"GET\" exec /usr/bin/php-cgi";
+\"%s\" REQUEST_METHOD=\"GET\" exec /usr/bin/php-cgi ";
     int command_len = strlen(format) + strlen(path) + strlen(query) - 3;
     char command[command_len];
     if (snprintf(command, command_len, format, query, path) < 0) {

@@ -21,7 +21,9 @@
 #include <serverX.h>
 
 // global variables
+
 extern char* root;
+extern int root_len;
 
 /**
  * Responds to client with directory listing of path.
@@ -96,7 +98,7 @@ void list(int cfd, const char* path)
     freedir(namelist, n);
 
     // prepare response
-    const char* relative = path + strlen(root);
+    const char* relative = path + root_len;
     char* template = "<!DOCTYPE HTML><html><head><title>Home - %s</title></head>\
 <body><h1>%s</h1><ul>%s</ul></body></html>";
     char body[strlen(template) - 2 + strlen(relative) - 2 + strlen(relative) - 2\

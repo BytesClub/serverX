@@ -50,12 +50,12 @@ bool parse(int cfd, const char* line, char* abs_path, char* query)
         error(cfd, 400);
         return false;
     }
-    strcpy(query, "");
+    strncpy(query, "", 1);
     char *q = strchr(peek, '?');
     int n = 0;
     if (q != NULL) {
         n = strlen(q);
-        strcpy(query, q + 1);
+        strncpy(query, q + 1, n - 1);
     }
     int m = strlen(peek) - n;
     strncpy(abs_path, peek, m);

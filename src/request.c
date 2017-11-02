@@ -46,11 +46,16 @@ bool request(int cfd, char** message, size_t* length)
         }
 
         // append bytes to message
-        *message = realloc(*message, *length + bytes + 1);
-        if (*message == NULL) {
+        char* temp_message = malloc(*length + bytes + 1);
+        if (temp_message == NULL) {
+            free(*message);
+            *message = NULL;
             *length = 0;
             break;
         }
+        memcpy(temp_message, *message, *length);
+        free(*message);
+        *message = temp_message;
         memcpy(*message + *length, buffer, bytes);
         *length += bytes;
 

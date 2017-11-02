@@ -23,7 +23,7 @@
 // global variables
 
 extern char* root;
-extern int sfd;
+extern int sfd, root_len;
 
 /**
  * Starts server on specified port rooted at path.
@@ -36,6 +36,7 @@ void start(short port, const char* path)
     // path to server's root
     root = realpath(path, NULL);
     if (root == NULL)    stop();
+    root_len = strlen(root);
 
     // ensure root is executable
     if (access(root, X_OK) == -1)    stop();

@@ -31,8 +31,9 @@ char* urldecode(const char* s)
 
     // allocate enough (zeroed) memory for an undecoded copy of s
     int lenOfString = strlen(s);
-    char* t = calloc(lenOfString + 1, 1);
+    char* t = malloc(lenOfString + 1);
     if (t == NULL)    return NULL;
+    memset(t, 0, lenOfString + 1);
 
     // iterate over characters in s, decoding percent-encoded octets, per
     // https://www.ietf.org/rfc/rfc3986.txt

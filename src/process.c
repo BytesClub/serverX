@@ -21,7 +21,9 @@
 #include <serverX.h>
 
 // global variable
+
 extern char* root;
+extern int root_len;
 
 /**
  * Process for extacting client request and respond
@@ -57,12 +59,15 @@ void* process(void *args) {
         line[needle - haystack + 2] = '\0';
 
         // log request-line
-        printf("%s", line);
+        time_t epoch = time(NULL);
+        unsigned int tid = (unsigned int)pthread_self();
+        printf("%sClient ID: %d  Thread ID: %u\n", ctime(&epoch), cfd, tid);
+        printf("\033[33m%s\033[39m", line);
         fflush(stdout);
 
         // parse request-line
-        char abs_path[LimitRequestLine + 1];
-        char query[LimitRequestLine + 1];
+        char abs_path[LimitRequestLine + 1] = { 0 };
+        char query[LimitRequestLine + 1] = { 0 };
         if (parse(cfd, line, abs_path, query)) {
             // URL-decode absolute-path
             char* p = urldecode(abs_path);
@@ -74,16 +79,23 @@ void* process(void *args) {
             }
 
             // resolve absolute-path to local path
-            path = malloc(strlen(root) + strlen(p) + 1);
+            int p_len = strlen(p);
+            path = malloc(root_len + p_len + 1);
             if (path == NULL) {
                 error(cfd, 500);
+                free(p);
                 free(message), message = NULL;
                 close(cfd);
                 return NULL;
             }
-            strcpy(path, root);
-            strcat(path, p);
+<<<<<<< 7e39b8755e1cabd100b018c9ddf6e0a4bb530d6c
+            memset(path, 0, root_len + p_len + 1);
+=======
+>>>>>>> ServerX: Code Quality: Regular Upgradation
+            strncpy(path, root, root_len);
+            strncat(path, p, p_len);
             free(p);
+            path[root_len + p_len] = '\0';
 
             // ensure path exists
             if (access(path, F_OK) == -1) {
@@ -98,10 +110,11 @@ void* process(void *args) {
             struct stat sb;
             if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode)) {
                 // redirect from absolute-path to absolute-path/
-                if (abs_path[strlen(abs_path) - 1] != '/') {
-                    char uri[strlen(abs_path) + 1 + 1];
-                    strcpy(uri, abs_path);
-                    strcat(uri, "/");
+                int abs_path_len = strlen(abs_path);
+                if (abs_path[abs_path_len - 1] != '/') {
+                    char uri[abs_path_len + 2];
+                    strncpy(uri, abs_path, abs_path_len);
+                    strncat(uri, "/", 1);
                     redirect(cfd, uri);
                     free(path), path = NULL;
                     free(message), message = NULL;

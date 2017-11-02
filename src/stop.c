@@ -24,6 +24,7 @@
 
 extern char* root;
 extern int sfd;
+extern int* cfd;
 
 /**
  * Stop server, deallocating any resources.
@@ -40,6 +41,9 @@ void stop(void)
 
     // free root, which was allocated by realpath
     if (root != NULL)    free(root);
+
+    // clear client socket allocated by main
+    if (cfd != NULL)    free(cfd);
 
     // close server socket
     if (sfd != -1)    close(sfd);
