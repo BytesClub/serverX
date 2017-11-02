@@ -29,7 +29,8 @@ extern char* root;
  * Reference: http://man7.org/linux/man-pages/man7/pthreads.7.html
  */
 void* process(void *args) {
-    int cfd = *((int *) args);
+    // get client socket and free allocation
+    int cfd = *((int*) args);
     free(args);
 
     // a message and its length
@@ -57,6 +58,7 @@ void* process(void *args) {
 
         // log request-line
         printf("%s", line);
+        fflush(stdout);
 
         // parse request-line
         char abs_path[LimitRequestLine + 1];

@@ -30,6 +30,9 @@ extern int sfd;
  */
 void start(short port, const char* path)
 {
+    // time counter
+    time_t epoch;
+
     // path to server's root
     root = realpath(path, NULL);
     if (root == NULL)    stop();
@@ -42,9 +45,11 @@ void start(short port, const char* path)
 
     printf("\033[33m");
     // announce PID
-    printf("Starting Process: %lli\tParent: %lli\n", (long long)pid, (long long)ppid);
+    time(&epoch);
+    printf("%sStarting Process: %lli\tParent: %lli\n", ctime(&epoch), (long long)pid, (long long)ppid);
     // announce root
-    printf("Using %s for server's root", root);
+    time(&epoch);
+    printf("%sUsing %s for server's root", ctime(&epoch), root);
     printf("\033[39m\n");
 
     // create a socket
@@ -63,7 +68,8 @@ void start(short port, const char* path)
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     if (bind(sfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) == -1) {
         printf("\033[31m");
-        printf("Port %i already in use", port);
+        time(&epoch);
+        printf("%sPort %i already in use", ctime(&epoch), port);
         printf("\033[39m\n");
         stop();
     }
@@ -76,7 +82,12 @@ void start(short port, const char* path)
     socklen_t addrlen = sizeof(addr);
     if (getsockname(sfd, (struct sockaddr*) &addr, &addrlen) == -1)    stop();
     printf("\033[32m");
-    printf("Started Process: %lli\n", (long long)pid);
-    printf("Listening on port %i", ntohs(addr.sin_port));
+    time(&epoch);
+    printf("%sStarted Process: %lli\n", ctime(&epoch), (long long)pid);
+    time(&epoch);
+    printf("%sListening on port %i", ctime(&epoch), ntohs(addr.sin_port));
     printf("\033[39m\n");
+
+    // flush output log
+    fflush(stdout);
 }

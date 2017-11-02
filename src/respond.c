@@ -55,4 +55,5 @@ Server: serverX/%s (%s)\r\n%s";
     }
     printf("HTTP/1.1 %i %s", code, phrase);
     printf("\033[39m\n");
+    fflush(stdout);
 }

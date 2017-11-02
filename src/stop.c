@@ -30,12 +30,12 @@ extern int sfd;
  */
 void stop(void)
 {
-    // preserve errno across this function's library calls
-    // int errsv = errno;
+    // time counter
+    time_t epoch = time(NULL);
 
     // announce stop
     printf("\033[33m");
-    printf("Stopping server\n");
+    printf("%sStopping server\n", ctime(&epoch));
     printf("\033[39m");
 
     // free root, which was allocated by realpath
@@ -44,6 +44,9 @@ void stop(void)
     // close server socket
     if (sfd != -1)    close(sfd);
 
+    // flush output log
+    fflush(stdout);
+
     // stop server
-    pthread_exit(0);
+    pthread_exit(EXIT_SUCCESS);
 }

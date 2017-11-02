@@ -99,7 +99,9 @@ int main(int argc, char* argv[])
                 error(*cfd, 500);
                 continue;
             }
-            printf("On Thread: %u\n", (unsigned int)tid);
+            time_t epoch = time(NULL);
+            printf("%sClient ID: %u  Thread ID: %u\n", ctime(&epoch), (unsigned int)(*cfd), (unsigned int)tid);
+            fflush(stdout);
             pthread_detach(tid);
         }
     }
