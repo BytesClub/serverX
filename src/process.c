@@ -88,14 +88,10 @@ void* process(void *args) {
                 close(cfd);
                 return NULL;
             }
-<<<<<<< 7e39b8755e1cabd100b018c9ddf6e0a4bb530d6c
             memset(path, 0, root_len + p_len + 1);
-=======
->>>>>>> ServerX: Code Quality: Regular Upgradation
             strncpy(path, root, root_len);
             strncat(path, p, p_len);
             free(p);
-            path[root_len + p_len] = '\0';
 
             // ensure path exists
             if (access(path, F_OK) == -1) {

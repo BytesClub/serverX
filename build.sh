@@ -38,14 +38,18 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
         VER=$DISTRIB_RELEASE
     elif [ -f /etc/debian_version ]; then
         # Older Debian/Ubuntu/etc.
-        OS=Debian
+        OS="Debian"
         VER=$(cat /etc/debian_version)
     elif [ -f /etc/SuSe-release ]; then
         # Older SuSE/etc.
-        ...
+        . /etc/SuSe-release
+        OS="SuSe Linux"
+        VER=$VERSION
     elif [ -f /etc/redhat-release ]; then
         # Older Red Hat, CentOS, etc.
-        ...
+        . /etc/os-release
+        OS=$NAME
+        VER=$VERSION_ID
     else
         # Fall back to uname, e.g. "Linux <version>"
         OS=$(uname -s)
@@ -53,8 +57,9 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     fi
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    # Mac OSX
-    ...
+    PLATFORM="Mac OS"
+    OS=$(sw_vers -productName)
+    VER=$(sw_vers -productVersion)
 
 elif [[ "$OSTYPE" == "cygwin" ]]; then
     # POSIX compatibility layer and Linux environment emulation for Windows
@@ -77,6 +82,8 @@ elif [[ "$OSTYPE" == "freebsd"* ]]; then
     PLATFORM="FreeBSD"
     OS=$(uname -s)
     VER=$(uname -r)
+else
+    PLATFORM="Unrecognized"
 fi
 
 # Fetch template

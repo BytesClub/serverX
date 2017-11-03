@@ -117,9 +117,6 @@ int main(int argc, char* argv[])
             cfd = NULL;
         }
     }
-
-    // default return
-    return 0;
 }
 
 // Help Function: usage string
