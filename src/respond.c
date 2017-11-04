@@ -39,9 +39,6 @@ Server: serverX/%s (%s)\r\n%s\r\n";
     int len = dprintf(cfd, defaultHeader, serverX_VERSION, PLATFORM, headers);
     if (len < 0)    return;
 
-    // respond with CRLF
-    // if (dprintf(cfd, "\r\n") < 0)    return;
-
     // respond with body
     if (write(cfd, body, length) == -1)    return;
 

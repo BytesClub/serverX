@@ -47,9 +47,16 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
         VER=$VERSION
     elif [ -f /etc/redhat-release ]; then
         # Older Red Hat, CentOS, etc.
-        . /etc/os-release
-        OS=$NAME
-        VER=$VERSION_ID
+        arr=( $(cat /etc/redhat-release) )
+        for i in ${arr[@]}; do
+            if [ $i == "release" ]; then
+                OS=$LP
+                LP=""
+                continue
+            fi
+            LP="$LP $i"
+        done
+        VER=$LP
     else
         # Fall back to uname, e.g. "Linux <version>"
         OS=$(uname -s)
@@ -79,11 +86,15 @@ elif [[ "$OSTYPE" == "msys" ]]; then
     VER=$(systeminfo | sed -n 's/^OS Version:[[:blank:]]*//p')
 
 elif [[ "$OSTYPE" == "freebsd"* ]]; then
+    # BSD Unix
     PLATFORM="FreeBSD"
     OS=$(uname -s)
     VER=$(uname -r)
 else
+    # Unrecognized platform, fall back to uname
     PLATFORM="Unrecognized"
+    OS=$(uname -s)
+    VER=$(uname -r)
 fi
 
 # Fetch template
