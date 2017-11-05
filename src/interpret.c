@@ -23,7 +23,7 @@
 /**
  * Interprets PHP file at path using query string.
  */
-void interpret(int cfd, const char* type, const char* path, const char* query)
+void interpret(int cfd, const char* method, const char* path, const char* query)
 {
     // ensure path is readable
     if (access(path, R_OK) == -1) {
@@ -31,18 +31,12 @@ void interpret(int cfd, const char* type, const char* path, const char* query)
         return;
     }
 
-    // If script other than PHP is found
-    if (strcasecmp(type, "PHP")) {
-        error(cfd, 501);
-        return;
-    }
-
     // open pipe to PHP interpreter
     const char* format = "QUERY_STRING=\"%s\" REDIRECT_STATUS=200 SCRIPT_FILENAME=\
-\"%s\" REQUEST_METHOD=\"GET\" exec /usr/bin/php-cgi ";
-    int command_len = strlen(format) + strlen(path) + strlen(query) - 3;
+\"%s\" REQUEST_METHOD=\"%s\" exec /usr/bin/php-cgi ";
+    int command_len = strlen(format) + strlen(query) + strlen(path) + strlen(method) - 4;
     char command[command_len];
-    if (snprintf(command, command_len, format, query, path) < 0) {
+    if (snprintf(command, command_len, format, query, path, method) < 0) {
         error(cfd, 500);
         return;
     }

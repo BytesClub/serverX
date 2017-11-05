@@ -21,36 +21,50 @@
 #include <serverX.h>
 
 /**
- * Parses a request-line, storing its absolute-path at abs_path
- * and its query string at query, both of which are assumed
- * to be at least of length LimitRequestLine + 1.
+ * Parses a request-line, storing the HTTP method at method,
+ * its absolute-path at abs_path and its query string at query,
+ * all of them are assumed to be at least of length LimitRequestLine + 1.
  */
-bool parse(int cfd, const char* line, char* abs_path, char* query)
+bool parse(int cfd, const char* line, char* method, char* abs_path, char* query)
 {
     if (cfd == -1 || line == NULL) {
         return false;
-    } else if (abs_path != NULL) {
-        memset(abs_path, '\0', LimitRequestLine + 1);
-    } else if (query != NULL) {
-        memset(query, '\0', LimitRequestLine + 1);
     }
+    if (method != NULL) {
+        memset(method, 0, LimitRequestLine + 1);
+    }
+    if (abs_path != NULL) {
+        memset(abs_path, 0, LimitRequestLine + 1);
+    }
+    if (query != NULL) {
+        memset(query, 0, LimitRequestLine + 1);
+    }
+
+    // Copy request-line from line (readable) to toParse (editable)
     unsigned int length = strlen(line);
     char toParse[length + 1];
-    strcpy(toParse, line);
+    strncpy(toParse, line, length);
+    toParse[length] = '\0';
+
+    // Split request-line to parse
     char *peek = strtok(toParse, " ");
-    if (strcmp(peek, "GET")) {
+    if (peek == NULL) {
+        error(cfd, 400);
+        return false;
+    }
+    strncpy(method, peek, strlen(peek));
+    if (strcmp(method, "GET")) {
         error(cfd, 405);
         return false;
     }
     peek = strtok(NULL, " ");
-    if (*peek != '/') {
+    if (peek != NULL && *peek != '/') {
         error(cfd, 501);
         return false;
-    } else if (strchr(peek, '\"')) {
+    } else if (peek == NULL || strchr(peek, '\"')) {
         error(cfd, 400);
         return false;
     }
-    strncpy(query, "", 1);
     char *q = strchr(peek, '?');
     int n = 0;
     if (q != NULL) {
@@ -60,7 +74,10 @@ bool parse(int cfd, const char* line, char* abs_path, char* query)
     int m = strlen(peek) - n;
     strncpy(abs_path, peek, m);
     peek = strtok(NULL, " ");
-    if (strcmp(peek, "HTTP/1.1\r\n")) {
+    if (peek == NULL) {
+        error(cfd, 400);
+        return false;
+    } else if (strcmp(peek, "HTTP/1.1\r\n")) {
         error(cfd, 505);
         return false;
     }

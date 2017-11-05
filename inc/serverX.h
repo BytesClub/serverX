@@ -255,13 +255,13 @@ char* indexes(const char* path);
 
 /**
  * @ function:      interpret
- * @ brief:         Interprets Script file at path using query string.
+ * @ brief:         Interprets PHP Script file at path using query string.
  * @ param cfd:     Client socket descriptor.
- * @ param type:    Type of the Script delivered.
+ * @ param method:  HTTP method that was called.
  * @ param path:    Path to PHP script.
  * @ param query:   Query found with URL (optional).
  */
-void interpret(int cfd, const char* type, const char* path, const char* query);
+void interpret(int cfd, const char* method, const char* path, const char* query);
 
 /**
  * @ function:      list
@@ -297,11 +297,12 @@ const char* lookup(const char* path);
  *                  to be at least of length LimitRequestLine + 1.
  * @ param cfd:     Client socket descriptor.
  * @ param line:    HTTP request with URL.
+ * @ param method:  HTTP method that was called.
  * @ param path:    Path extracted from URL.
  * @ param query:   Query extracted from URL.
  * @ returns:       True iff action successful, false otherwise.
  */
-bool parse(int cfd, const char* line, char* path, char* query);
+bool parse(int cfd, const char* line, char* method, char* path, char* query);
 
 /**
  * @ function:      process

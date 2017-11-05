@@ -89,9 +89,7 @@ bool request(int cfd, char** message, size_t* length)
                 if (needle == NULL)    break;
 
                 // ensure field is no longer than LimitRequestFieldSize
-                if (needle - haystack + 2 > LimitRequestFieldSize) {
-                    break;
-                }
+                if (needle - haystack + 2 > LimitRequestFieldSize)    break;
 
                 // look beyond CRLF
                 haystack = needle + 2;

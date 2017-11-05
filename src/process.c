@@ -67,9 +67,10 @@ void* process(void *args)
         fflush(stdout);
 
         // parse request-line
-        char abs_path[LimitRequestLine + 1] = { 0 };
-        char query[LimitRequestLine + 1] = { 0 };
-        if (parse(cfd, line, abs_path, query)) {
+        char method[LimitRequestLine + 1];
+        char abs_path[LimitRequestLine + 1];
+        char query[LimitRequestLine + 1];
+        if (parse(cfd, line, method, abs_path, query)) {
             // URL-decode absolute-path
             char* p = urldecode(abs_path);
             if (p == NULL) {
@@ -159,11 +160,9 @@ void* process(void *args)
 
             // interpret PHP script at path
             if (strcasecmp("text/x-php", type) == 0) {
-                interpret(cfd, "PHP", path, query);
-                free(path);
-                path = NULL;
-                free(message);
-                message = NULL;
+                interpret(cfd, method, path, query);
+                free(path), path = NULL;
+                free(message), message = NULL;
             } else {
                 // transfer file at path
                 transfer(cfd, path, type);
@@ -186,6 +185,6 @@ void* process(void *args)
         free(message);
         message = NULL;
     }
-    
+
     return NULL;
 }
