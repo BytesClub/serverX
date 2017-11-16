@@ -41,6 +41,12 @@
 // number of bytes for buffers
 #define BYTES 512
 
+// allocated time for keep alive connection
+#define KeepAliveTimeout 300
+
+// available request number for keep alive connection
+#define KeepAliveMaximum 10
+
 // C++ header compatibility [open]
 #ifdef _cplusplus
     extern "C" {
@@ -141,6 +147,22 @@
         sigemptyset(&act.sa_mask);   \
         sigaction((SIG), &act, NULL);
 #endif
+
+// derived data types
+
+/**
+ * @ data-type:      client_t
+ * @ brief:          Holds information about currently connected clients.
+ * @ member cfd:     Client socket descriptor.
+ * @ member nreq:    Number of request recieved from that client.
+ * @ member tstamp:  Last timestamp the client has requested.
+ * @ member next:    Pointer to next client info block.
+ */
+typedef struct client_t {
+    int cfd, nreq;
+    time_t tstamp;
+    struct client_t* next;
+} client_t;
 
 // prototypes
 
