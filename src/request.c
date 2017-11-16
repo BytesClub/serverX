@@ -33,10 +33,15 @@ bool request(int cfd, char** message, size_t* length)
     // read message
     while (*length < LimitRequestLine + LimitRequestFields *
             LimitRequestFieldSize + 4) {
+
         // read from socket
         char buffer[BYTES];
         ssize_t bytes = read(cfd, buffer, BYTES);
-        if (bytes < 0) {
+        if (bytes == 0) {
+            // EOF reached without error
+            return true;
+        } else if (bytes < 0) {
+            // system error occured
             if (*message != NULL) {
                 free(*message);
                 *message = NULL;
@@ -102,7 +107,7 @@ bool request(int cfd, char** message, size_t* length)
             if (fields > LimitRequestFields)    break;
 
             // valid
-            return true;
+            // return true;
         }
     }
 
