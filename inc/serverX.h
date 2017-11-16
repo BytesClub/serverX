@@ -42,7 +42,7 @@
 #define BYTES 512
 
 // allocated time for keep alive connection
-#define KeepAliveTimeout 300
+#define KeepAliveTimeout 60
 
 // available request number for keep alive connection
 #define KeepAliveMaximum 10

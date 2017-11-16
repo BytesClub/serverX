@@ -31,9 +31,8 @@ extern int root_len;
  * Reference: http://man7.org/linux/man-pages/man7/pthreads.7.html
  */
 void* process(void *args) {
-    // get client socket and free allocation
+    // get client socket id
     int cfd = *((int*) args);
-    free(args);
 
     // a message and its length
     char* message = NULL;
@@ -170,8 +169,7 @@ void* process(void *args) {
         message = NULL;
     }
 
-    // Close client socket
+    // close connection
     close(cfd);
-
     return NULL;
 }

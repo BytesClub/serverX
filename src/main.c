@@ -31,7 +31,6 @@ int root_len = 0;
 
 int sfd = -1;
 client_t* cfdlist = NULL;
-int* cfd;
 
 int main(int argc, char* argv[])
 {
@@ -92,15 +91,9 @@ int main(int argc, char* argv[])
 
     // accept connections one at a time
     while (true) {
-        // Client socket descriptor
-        cfd = malloc(sizeof(int));
-
         // check whether client has connected
+        int* cfd = find(connected());
         if (cfd != NULL) {
-            if ((*cfd = connected()) == -1) {
-                free(cfd), cfd = NULL;
-                continue;
-            }
             pthread_t tid;
             pthread_attr_init(&tattr);
             if (pthread_create(&tid, NULL, process, cfd)) {
@@ -111,11 +104,9 @@ int main(int argc, char* argv[])
                 ctime(&epoch), strerror(errsv));
                 printf("\033[39m\n");
                 error(*cfd, 500);
-                free(cfd), cfd = NULL;
                 continue;
             }
             pthread_detach(tid);
-            cfd = NULL;
         }
     }
 }

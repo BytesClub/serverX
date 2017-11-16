@@ -35,8 +35,10 @@ void respond(int cfd, int code, const char* headers, const char* body, size_t le
 
     // respond with headers
     const char* defaultHeader = "X-Content-Type-Options: nosniff\r\n\
-Server: serverX/%s (%s)\r\n%s\r\n";
-    int len = dprintf(cfd, defaultHeader, serverX_VERSION, PLATFORM, headers);
+Server: serverX/%s (%s)\r\nConnection: Keep-Alive\r\nKeep-Alive:\
+timeout=%d, max=%d\r\n%s\r\n";
+    int len = dprintf(cfd, defaultHeader, serverX_VERSION, PLATFORM,
+        KeepAliveTimeout, KeepAliveMaximum, headers);
     if (len < 0)    return;
 
     // respond with body

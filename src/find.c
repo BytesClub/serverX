@@ -26,7 +26,8 @@ extern client_t* cfdlist;
 /**
  * Creates new client info block and returns pointer to it's cfd
  */
-static int* create(int cfd, time_t tstamp) {
+static int* create(int cfd, time_t tstamp)
+{
     client_t* cli = malloc(sizeof(client_t));
     cli->cfd = cfd, cli->nreq = 1, cli->tstamp = tstamp;
     cli->next = cfdlist;
@@ -38,7 +39,13 @@ static int* create(int cfd, time_t tstamp) {
  * Finds memory location for particular client.
  * Returns pointer to cfd integer in client info block.
  */
-int* find(int cfd) {
+int* find(int cfd)
+{
+    // invalid connection
+    if (cfd == -1) {
+        return NULL;
+    }
+
     time_t tstamp = time(NULL);
 
     // zero connection
@@ -48,7 +55,8 @@ int* find(int cfd) {
 
     // single connection
     if (cfdlist->next == NULL) {
-        if ((tstamp - cfdlist->tstamp) > KeepAliveTimeout || cfdlist->nreq == KeepAliveMaximum) {
+        if ((tstamp - cfdlist->tstamp) > KeepAliveTimeout || cfdlist->nreq ==
+        KeepAliveMaximum) {
             close(cfdlist->cfd);
             free(cfdlist);
             cfdlist = NULL;
@@ -67,7 +75,8 @@ int* find(int cfd) {
     client_t* cur = cfdlist->next;
     while (cur != NULL) {
         // if connection is timed out or maximum limit reached
-        if ((tstamp - cur->tstamp) > KeepAliveTimeout || cur->nreq == KeepAliveMaximum) {
+        if ((tstamp - cur->tstamp) > KeepAliveTimeout || cur->nreq ==
+        KeepAliveMaximum) {
             prev->next = cur->next;
             close(cur->cfd);
             free(cur);
@@ -85,5 +94,5 @@ int* find(int cfd) {
         prev = cur;
         cur = cur->next;
     }
-    return create(cfd, tstamp)
+    return create(cfd, tstamp);
 }

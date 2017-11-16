@@ -104,8 +104,7 @@ void list(int cfd, const char* path)
     char body[strlen(template) - 2 + strlen(relative) - 2 + strlen(relative) - 2\
               + strlen(list) + 1];
     int length = sprintf(body, template, relative, relative, list);
-    if (length < 0)
-    {
+    if (length < 0) {
         free(list);
         closedir(dir);
         error(cfd, 500);
