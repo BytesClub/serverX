@@ -183,6 +183,14 @@ int connected(void);
 void error(int cfd, unsigned short code);
 
 /**
+ * @ function:       find
+ * @ brief:          Finds memory location for particular client.
+ * @ param cfd:      Current client socket descriptor.
+ * @ returns:        Pointer to cfd in client info block.
+ */
+int* find(int cfd);
+
+/**
  * @ function:       freedir
  * @ brief:          Frees memory allocated by scandir.
  * @ param namelist: List of files in given directory.

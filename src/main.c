@@ -30,6 +30,7 @@ int root_len = 0;
 // file descriptor for sockets
 
 int sfd = -1;
+client_t* cfdlist = NULL;
 int* cfd;
 
 int main(int argc, char* argv[])
