@@ -91,14 +91,18 @@ int main(int argc, char* argv[])
 
     // accept connections one at a time
     while (true) {
+        time_t epoch = time(NULL);
+
+        // update client connection info
+        checkcfds(false, epoch);
+
         // check whether client has connected
-        int* cfd = find(connected());
+        int* cfd = find(connected(), epoch);
         if (cfd != NULL) {
             pthread_t tid;
             pthread_attr_init(&tattr);
             if (pthread_create(&tid, NULL, process, cfd)) {
                 int errsv = errno;
-                time_t epoch = time(NULL);
                 printf("\033[31m");
                 printf("%sFollowing error has occured while creating thread\n%s",
                 ctime(&epoch), strerror(errsv));

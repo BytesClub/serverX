@@ -43,16 +43,7 @@ void stop(void)
     if (root != NULL)    free(root);
 
     // clear client socket allocated by find
-    if (cfdlist != NULL) {
-        client_t* cur = cfdlist;
-        client_t* next = cfdlist->next;
-        while (cur != NULL) {
-            close(cur->cfd);
-            free(cur);
-            cur = next;
-            next = next->next;
-        }
-    }
+    if (cfdlist != NULL)    checkcfds(true, epoch);
 
     // close server socket
     if (sfd != -1)    close(sfd);

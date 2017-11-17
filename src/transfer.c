@@ -50,10 +50,13 @@ void transfer(int cfd, const char* path, const char* type)
     fclose(file);
 
     // prepare response
-    char* template = "Content-Type: %s\r\n";
-    int headers_len = strlen(template) + strlen(type) - 1;
+    char* template = "Content-Type: %s\r\nConnection: keep-alive\r\nKeep-Alive:\
+timeout=%d, max=%d\r\n";
+    int headers_len = strlen(template) + strlen(type) +
+    ceil(log10(KeepAliveTimeout)) + ceil(log10(KeepAliveMaximum)) - 1;
     char headers[headers_len];
-    if (snprintf(headers, headers_len, template, type) < 0) {
+    if (snprintf(headers, headers_len, template, type, KeepAliveTimeout,
+    KeepAliveMaximum) < 0) {
         error(cfd, 500);
         return;
     }

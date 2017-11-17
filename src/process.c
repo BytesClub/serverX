@@ -168,8 +168,6 @@ void* process(void *args) {
         free(message);
         message = NULL;
     }
-
-    // close connection
-    close(cfd);
+    
     return NULL;
 }

@@ -39,60 +39,26 @@ static int* create(int cfd, time_t tstamp)
  * Finds memory location for particular client.
  * Returns pointer to cfd integer in client info block.
  */
-int* find(int cfd)
+int* find(int cfd, time_t tstamp)
 {
     // invalid connection
     if (cfd == -1) {
         return NULL;
     }
 
-    time_t tstamp = time(NULL);
-
     // zero connection
     if (cfdlist == NULL) {
         return create(cfd, tstamp);
     }
 
-    // single connection
-    if (cfdlist->next == NULL) {
-        if ((tstamp - cfdlist->tstamp) > KeepAliveTimeout || cfdlist->nreq ==
-        KeepAliveMaximum) {
-            close(cfdlist->cfd);
-            free(cfdlist);
-            cfdlist = NULL;
-            return create(cfd, tstamp);
-        }
-        if (cfdlist->cfd == cfd) {
-            cfdlist->nreq++;
-            cfdlist->tstamp = tstamp;
-            return &(cfdlist->cfd);
-        }
-        return create(cfd, tstamp);
-    }
-
     // general case
-    client_t* prev = cfdlist;
-    client_t* cur = cfdlist->next;
-    while (cur != NULL) {
-        // if connection is timed out or maximum limit reached
-        if ((tstamp - cur->tstamp) > KeepAliveTimeout || cur->nreq ==
-        KeepAliveMaximum) {
-            prev->next = cur->next;
-            close(cur->cfd);
-            free(cur);
-            cur = prev->next;
-            continue;
-        }
-
+    for (client_t* cur = cfdlist; cur != NULL; cur = cur->next) {
         // found client id, already exists
         if (cur->cfd == cfd) {
             cur->nreq++;
             cur->tstamp = tstamp;
             return &(cur->cfd);
         }
-
-        prev = cur;
-        cur = cur->next;
     }
     return create(cfd, tstamp);
 }

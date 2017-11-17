@@ -42,10 +42,10 @@
 #define BYTES 512
 
 // allocated time for keep alive connection
-#define KeepAliveTimeout 60
+#define KeepAliveTimeout 5
 
 // available request number for keep alive connection
-#define KeepAliveMaximum 10
+#define KeepAliveMaximum 5
 
 // C++ header compatibility [open]
 #ifdef _cplusplus
@@ -167,6 +167,14 @@ typedef struct client_t {
 // prototypes
 
 /**
+ * @ function:       checkcfds
+ * @ brief:          Checks if a connection needs to be closed.
+ * @ param status:   False if regular check, True if delete all.
+ * @ param tstamp:   Current timestamp.
+ */
+void checkcfds(bool status, time_t tstamp);
+
+/**
  * @ function:       connected
  * @ brief:          Checks (without blocking) whether a client has connected
  *                   to the server.
@@ -186,9 +194,10 @@ void error(int cfd, unsigned short code);
  * @ function:       find
  * @ brief:          Finds memory location for particular client.
  * @ param cfd:      Current client socket descriptor.
+ * @ param tstamp:   Timstamp of the current request.
  * @ returns:        Pointer to cfd in client info block.
  */
-int* find(int cfd);
+int* find(int cfd, time_t tstamp);
 
 /**
  * @ function:       freedir
