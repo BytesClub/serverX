@@ -70,7 +70,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 
 elif [[ "$OSTYPE" == "cygwin" ]]; then
     # POSIX compatibility layer and Linux environment emulation for Windows
-    PLATFORM="Windows"
+    PLATFORM="Windows NT"
     if type cmd /c ver >/dev/null 2>&1; then
         OS=$(cmd /c ver)
     else
@@ -81,7 +81,7 @@ elif [[ "$OSTYPE" == "cygwin" ]]; then
 
 elif [[ "$OSTYPE" == "msys" ]]; then
     # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
-    PLATFORM="Windows"
+    PLATFORM="Windows NT"
     OS=$(systeminfo | sed -n 's/^OS Name:[[:blank:]]*//p')
     VER=$(systeminfo | sed -n 's/^OS Version:[[:blank:]]*//p')
 
