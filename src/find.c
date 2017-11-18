@@ -29,9 +29,13 @@ extern client_t* cfdlist;
 static int* create(int cfd, time_t tstamp)
 {
     client_t* cli = malloc(sizeof(client_t));
+    if (cli == NULL)    return NULL;
     cli->cfd = cfd, cli->nreq = 1, cli->tstamp = tstamp;
     cli->next = cfdlist;
     cfdlist = cli;
+    printf("\033[33mCreated connection:  Client ID: %d  Last Used On: %zu\
+033[39m\n");
+    fflush(stdout);
     return &(cli->cfd);
 }
 

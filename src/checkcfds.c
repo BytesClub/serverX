@@ -38,10 +38,15 @@ void checkcfds(bool status, time_t tstamp)
         // if connection is timed out or maximum limit reached
         if (status || (tstamp - cfdlist->tstamp) > KeepAliveTimeout ||
         cfdlist->nreq == KeepAliveMaximum) {
-            respond(cfdlist->cfd, 200, "Connection: Close\r\n", NULL, 0);
+            // respond(cfdlist->cfd, 200, "Connection: Close\r\n", NULL, 0);
+            printf("\033[33mClosing connection:  Client ID: %d  Requests: %d  \
+Last Used On: %zu\033[39m\n", cfdlist->cfd, cfdlist->nreq,
+            (long unsigned) cfdlist->tstamp);
             close(cfdlist->cfd);
             free(cfdlist);
             cfdlist = NULL;
+            printf("\033[32mConnection Closed!\033[39m\n");
+            fflush(stdout);
             return;
         }
     }
@@ -54,10 +59,14 @@ void checkcfds(bool status, time_t tstamp)
         if (status || (tstamp - cur->tstamp) > KeepAliveTimeout || cur->nreq ==
         KeepAliveMaximum) {
             prev->next = cur->next;
-            respond(cur->cfd, 200, "Connection: Close\r\n", NULL, 0);
+            // respond(cur->cfd, 200, "Connection: Close\r\n", NULL, 0);
+            printf("\033[33mClosing connection:  Client ID: %d  Requests: %d  \
+Last Used On: %zu\033[39m\n", cur->cfd, cur->nreq, (long unsigned) cur->tstamp);
             close(cur->cfd);
             free(cur);
             cur = prev->next;
+            printf("\033[32mConnection Closed!\033[39m\n");
+            fflush(stdout);
             continue;
         }
 
