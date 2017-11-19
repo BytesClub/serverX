@@ -33,8 +33,8 @@ static int* create(int cfd, time_t tstamp)
     cli->cfd = cfd, cli->nreq = 1, cli->tstamp = tstamp;
     cli->next = cfdlist;
     cfdlist = cli;
-    printf("\033[33mCreated connection:  Client ID: %d  Last Used On: %zu\
-033[39m\n");
+    printf("\033[33mCreated connection:  Client ID: %d  Last Used On: %s\033[39m",
+    cli->cfd, ctime(&cli->tstamp));
     fflush(stdout);
     return &(cli->cfd);
 }

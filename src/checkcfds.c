@@ -40,8 +40,7 @@ void checkcfds(bool status, time_t tstamp)
         cfdlist->nreq == KeepAliveMaximum) {
             // respond(cfdlist->cfd, 200, "Connection: Close\r\n", NULL, 0);
             printf("\033[33mClosing connection:  Client ID: %d  Requests: %d  \
-Last Used On: %zu\033[39m\n", cfdlist->cfd, cfdlist->nreq,
-            (long unsigned) cfdlist->tstamp);
+Last Used On: %s\033[39m", cfdlist->cfd, cfdlist->nreq, ctime(&cfdlist->tstamp));
             close(cfdlist->cfd);
             free(cfdlist);
             cfdlist = NULL;
@@ -61,7 +60,7 @@ Last Used On: %zu\033[39m\n", cfdlist->cfd, cfdlist->nreq,
             prev->next = cur->next;
             // respond(cur->cfd, 200, "Connection: Close\r\n", NULL, 0);
             printf("\033[33mClosing connection:  Client ID: %d  Requests: %d  \
-Last Used On: %zu\033[39m\n", cur->cfd, cur->nreq, (long unsigned) cur->tstamp);
+Last Used On: %s\033[39m", cur->cfd, cur->nreq, ctime(&cur->tstamp));
             close(cur->cfd);
             free(cur);
             cur = prev->next;
