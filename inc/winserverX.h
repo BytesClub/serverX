@@ -76,4 +76,11 @@ int scandir_full_path(const char *path, struct dirent ***e,
 
 DWORD getppid();
 
+
+// Header for libbsd
+
+void setprogname(const char*);
+const char* getprogname(void);
+
+
 #endif // winserverX.h

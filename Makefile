@@ -21,7 +21,7 @@ CC = gcc
 CFLAGS = -ggdb3 -O0 -O3 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow -U__STRICT_ANSI__ -pedantic
 
 # Flags for Linker
-LFLAGS = -lm -lbsd -pthread
+LFLAGS = -lm -pthread
 
 # Flags for Directories
 DIR = -I$(INC)
@@ -50,6 +50,10 @@ ifeq ($(OS),Windows_NT)
 	SOURCE += $(wildcard $(LIB)/*.c)
 	HEADER += $(INC)/winserverX.h
 	LFLAGS += -lws2_32 -lwsock32
+
+# GNU/Linux Support
+else
+	LFLAGS += -lbsd
 endif
 
 # Object File(s)

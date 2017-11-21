@@ -25,7 +25,7 @@ extern int sfd;
 
 /**
  * Checks (without blocking) whether a client has connected to server.
- * Returns true iff so.
+ * Returns cfd iff so, -1 if error occurs.
  */
 int connected(void)
 {

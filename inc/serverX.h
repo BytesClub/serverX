@@ -86,7 +86,6 @@
 #endif
 #ifndef __stdlib_h
     #include <stdlib.h>
-    #include <bsd/stdlib.h>
 #endif
 #ifndef __string_h
     #include <string.h>
@@ -139,6 +138,9 @@
     #endif
     #ifndef __sys_socket_h
         #include <sys/socket.h>
+    #endif
+    #ifndef __bsd_stdlib_h
+        #include <bsd/stdlib.h>
     #endif
     #define SIGNAL(SIG, HANDLER)     \
         struct sigaction act;        \
