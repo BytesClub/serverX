@@ -75,7 +75,7 @@ int scandir_main(const char *path, struct dirent ***e,
                 free(ents);
                 return -2;
             }
-            memncpy(newents, ents, sizeof(ents));
+            memncpy(newents, ents, n);
             ents = newents;
         }
 

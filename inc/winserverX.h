@@ -68,13 +68,14 @@ int scandir_full_path(const char *path, struct dirent ***e,
         int (*compare)(const struct dirent **, const struct dirent **));
 
 
-// Header for ppid()
+// Header for ppid() and getuid()
 
 #ifndef __tlhelp32_h
     #include <tlhelp32.h>
 #endif
 
 DWORD getppid();
+int getuid(void);
 
 
 // Header for libbsd

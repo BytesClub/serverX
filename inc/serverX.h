@@ -99,6 +99,9 @@
 #ifndef __sys_types_h
     #include <sys/types.h>
 #endif
+#ifndef __time_h
+    #include <time.h>
+#endif
 #ifndef __unistd_h
     #include <unistd.h>
 #endif
@@ -125,6 +128,7 @@
     #endif
     #define SIGNAL(SIG, HANDLER) \
         signal((SIG), (HANDLER));
+    #define memncpy memcpy
     #if defined(_MSC_VER)
         #define popen(x, y)  _popen(x, y)
         #define pclose(x)    _pclose(x)
