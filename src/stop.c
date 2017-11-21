@@ -35,9 +35,7 @@ void stop(void)
     time_t epoch = time(NULL);
 
     // announce stop
-    printf("\033[33m");
-    printf("%sStopping server\n", ctime(&epoch));
-    printf("\033[39m");
+    printf("\r\033[33m%sStopping server\n\033[39m", ctime(&epoch));
 
     // free root, which was allocated by realpath
     if (root != NULL)    free(root);
