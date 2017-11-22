@@ -50,10 +50,6 @@ ifeq ($(OS),Windows_NT)
 	SOURCE += $(wildcard $(LIB)/*.c)
 	HEADER += $(INC)/winserverX.h
 	LFLAGS += -lws2_32 -lwsock32
-
-# GNU/Linux Support
-else
-	LFLAGS += -lbsd
 endif
 
 # Object File(s)

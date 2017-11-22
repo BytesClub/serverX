@@ -143,9 +143,6 @@
     #ifndef __sys_socket_h
         #include <sys/socket.h>
     #endif
-    #ifndef __bsd_stdlib_h
-        #include <bsd/stdlib.h>
-    #endif
     #define SIGNAL(SIG, HANDLER)     \
         struct sigaction act;        \
         act.sa_handler = (HANDLER);  \
@@ -212,6 +209,13 @@ int* find(int cfd, time_t tstamp);
  * @ param n:        Number of files in given directory.
  */
 void freedir(struct dirent** namelist, int n);
+
+/**
+ * @ function:       getprogname
+ * @ brief:          Return current process/program name.
+ * @ returns:        Process/program name as string.
+ */
+const char* getprogname(void);
 
 /**
  * @ function:       handler
@@ -336,6 +340,13 @@ bool request(int cfd, char** message, size_t* length);
  * @ param length:  Size of buffer.
  */
 void respond(int cfd, int code, const char* headers, const char* body, size_t length);
+
+/**
+ * @ function:      setprogname
+ * @ brief:         Set current process/program name from extracted path.
+ * @ param prgname: Program name with complete path.
+ */
+void setprogname(const char* prgname);
 
 /**
  * @ function:      start

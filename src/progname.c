@@ -66,13 +66,13 @@ getprogname(void)
  * Set current process/program name from extracted path.
  */
 void
-setprogname(const char *prgname)
+setprogname(const char *progname)
 {
 	const char *last_slash;
 
-	last_slash = strrchr(prgname, PATHSEPERATOR);
+	last_slash = strrchr(progname, PATHSEPERATOR);
 	if (last_slash == NULL)
-		__progname = prgname;
+		__progname = progname;
 	else
 		__progname = last_slash + 1;
 }
