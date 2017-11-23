@@ -37,6 +37,9 @@ int root_len = 0;
 int sfd = -1;
 client_t* cfdlist = NULL;
 
+// flag that is set true iff stdout is redirected
+bool logger = false;
+
 int main(int argc, char* argv[])
 {
     // a global variable defined in errno.h that's "set by system
@@ -69,6 +72,8 @@ int main(int argc, char* argv[])
             case 'l':
                 if (freopen(optarg, "a+", stdout) == NULL) {
                     fprintf(stderr, "Failed to open logfile %s\n", optarg);
+                } else {
+                    logger = true;
                 }
                 break;
 

@@ -91,10 +91,12 @@ elif [[ "$OSTYPE" == "freebsd"* ]]; then
     OS=$(uname -s)
     VER=$(uname -r)
 else
-    # Unrecognized platform, fall back to uname
+    # Unrecognized platform, fall back to uname if exists
     PLATFORM="Unrecognized"
-    OS=$(uname -s)
-    VER=$(uname -r)
+    if type uname >/dev/null 2>&1; then
+        OS=$(uname -s)
+        VER=$(uname -r)
+    fi
 fi
 
 # Fetch template

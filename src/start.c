@@ -26,6 +26,8 @@ extern char* root;
 extern int sfd, root_len;
 #if defined(_WIN32) || defined(__WIN32__)
     extern HANDLE hConsole;
+#else
+    extern bool logger;
 #endif
 
 /**

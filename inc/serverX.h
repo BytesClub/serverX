@@ -154,11 +154,11 @@
         act.sa_flags = 0;            \
         sigemptyset(&act.sa_mask);   \
         sigaction((SIG), &act, NULL);
-    #define ALERT   puts("\033[33m");
-    #define DANGER  puts("\033[31m");
-    #define STATUS  puts("\033[33m");
-    #define SUCCESS puts("\033[34m");
-    #define RESET   puts("\033[39m");
+    #define ALERT   logger || puts("\033[33m");
+    #define DANGER  logger || puts("\033[31m");
+    #define STATUS  logger || puts("\033[33m");
+    #define SUCCESS logger || puts("\033[34m");
+    #define RESET   logger || puts("\033[39m");
 #endif
 
 // derived data types

@@ -25,6 +25,7 @@
 extern char* root;
 extern int sfd;
 extern client_t* cfdlist;
+extern bool logger;
 #if defined(_WIN32) || defined(__WIN32__)
     extern HANDLE hConsole;
 #endif
@@ -53,6 +54,7 @@ void stop(void)
 
     // flush output log
     fflush(stdout);
+    if (logger)    fclose(stdout);
 
     // Windows compatible log message [close]
     #if defined(_WIN32) || defined(__WIN32__)
