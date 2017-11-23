@@ -33,41 +33,23 @@ void checkcfds(bool status, time_t tstamp)
         return;
     }
 
-    // single connection
-    if (cfdlist->next == NULL) {
-        // if connection is timed out or maximum limit reached
-        if (status || (tstamp - cfdlist->tstamp) > KeepAliveTimeout ||
-        cfdlist->nreq == KeepAliveMaximum) {
-            // respond(cfdlist->cfd, 200, "Connection: Close\r\n", NULL, 0);
-            printf("\033[34mClosing connection:  Client ID: %d  Requests: %d  \
-Last Used On: %s\033[39m", cfdlist->cfd, cfdlist->nreq, ctime(&cfdlist->tstamp));
-            close(cfdlist->cfd);
-            free(cfdlist);
-            cfdlist = NULL;
-            fflush(stdout);
-            return;
-        }
-    }
-
-    // general case
-    client_t* prev = cfdlist;
-    client_t* cur = cfdlist->next;
+    // default case
+    client_t* cur = cfdlist;
+    client_t* next;
     while (cur != NULL) {
+        next = cur->next;
+
         // if connection is timed out or maximum limit reached
         if (status || (tstamp - cur->tstamp) > KeepAliveTimeout || cur->nreq ==
         KeepAliveMaximum) {
-            prev->next = cur->next;
             // respond(cur->cfd, 200, "Connection: Close\r\n", NULL, 0);
             printf("\033[34mClosing connection:  Client ID: %d  Requests: %d  \
-Last Used On: %s\033[39m", cur->cfd, cur->nreq, ctime(&cur->tstamp));
+Last Used On: %s\033[39m", cur->cfd, cur->nreq, ctime(&(cur->tstamp)));
             close(cur->cfd);
             free(cur);
-            cur = prev->next;
             fflush(stdout);
-            continue;
         }
 
-        prev = cur;
-        cur = cur->next;
+        cur = next;
     }
 }

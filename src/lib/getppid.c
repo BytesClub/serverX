@@ -35,10 +35,10 @@
         return ppid;
     }
 #else
-DWORD getppid(void)
-{
-    return 0;
-}
+    DWORD getppid(void)
+    {
+        return 0;
+    }
 #endif
 
 // Dummy method to avoid compile error
