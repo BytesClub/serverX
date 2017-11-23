@@ -21,7 +21,11 @@
 #include <serverX.h>
 
 // global variables
+
 extern client_t* cfdlist;
+#if defined(_WIN32) || defined(__WIN32__)
+    extern HANDLE hConsole;
+#endif
 
 /**
  * Checks if a connection needs to be closed.
@@ -43,8 +47,10 @@ void checkcfds(bool status, time_t tstamp)
         if (status || (tstamp - cur->tstamp) > KeepAliveTimeout || cur->nreq ==
         KeepAliveMaximum) {
             // respond(cur->cfd, 200, "Connection: Close\r\n", NULL, 0);
-            printf("\033[34mClosing connection:  Client ID: %d  Requests: %d  \
-Last Used On: %s\033[39m", cur->cfd, cur->nreq, ctime(&(cur->tstamp)));
+            STATUS;
+            printf("Closing connection:  Client ID: %d  Requests: %d  \
+Last Used On: %s", cur->cfd, cur->nreq, ctime(&(cur->tstamp)));
+            RESET;
             close(cur->cfd);
             free(cur);
             fflush(stdout);

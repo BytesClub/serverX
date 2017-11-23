@@ -24,6 +24,9 @@
 
 extern char* root;
 extern int sfd, root_len;
+#if defined(_WIN32) || defined(__WIN32__)
+    extern HANDLE hConsole;
+#endif
 
 /**
  * Starts server on specified port rooted at path.
@@ -44,18 +47,24 @@ void start(short port, const char* path)
     // Process ID
     pid_t pid = getpid(), ppid = getppid();
 
-    printf("\033[33m");
+    ALERT;
     // announce PID
     time(&epoch);
     printf("%sStarting Process: %lli\tParent: %lli\n", ctime(&epoch), (long long)pid, (long long)ppid);
     // announce root
     time(&epoch);
-    printf("%sUsing %s for server's root", ctime(&epoch), root);
-    printf("\033[39m\n");
+    printf("%sUsing %s for server's root\n", ctime(&epoch), root);
+    RESET;
 
     // create a socket
     sfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sfd == -1)    stop();
+    if (sfd == -1) {
+        DANGER;
+        time(&epoch);
+        printf("%sFailed to create Socket\n", ctime(&epoch));
+        RESET;
+        stop();
+    }
 
     // allow reuse of address (to avoid "Address already in use")
     char optval = 1;
@@ -68,10 +77,10 @@ void start(short port, const char* path)
     serv_addr.sin_port = htons(port);
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     if (bind(sfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) == -1) {
-        printf("\033[31m");
+        DANGER;
         time(&epoch);
-        printf("%sPort %i already in use", ctime(&epoch), port);
-        printf("\033[39m\n");
+        printf("%sPort %i already in use\n", ctime(&epoch), port);
+        RESET;
         stop();
     }
 
@@ -82,12 +91,12 @@ void start(short port, const char* path)
     struct sockaddr_in addr;
     socklen_t addrlen = sizeof(addr);
     if (getsockname(sfd, (struct sockaddr*) &addr, &addrlen) == -1)    stop();
-    printf("\033[32m");
+    SUCCESS;
     time(&epoch);
     printf("%sStarted Process: %lli\n", ctime(&epoch), (long long)pid);
     time(&epoch);
     printf("%sListening on port %i", ctime(&epoch), ntohs(addr.sin_port));
-    printf("\033[39m\n");
+    RESET;
 
     // flush output log
     fflush(stdout);

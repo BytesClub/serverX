@@ -133,6 +133,11 @@
         #define popen(x, y)  _popen(x, y)
         #define pclose(x)    _pclose(x)
     #endif
+    #define ALERT   SetConsoleTextAttribute(hConsole, 6);
+    #define DANGER  SetConsoleTextAttribute(hConsole, 4);
+    #define STATUS  SetConsoleTextAttribute(hConsole, 1);
+    #define SUCCESS SetConsoleTextAttribute(hConsole, 2);
+    #define RESET   SetConsoleTextAttribute(hConsole, 7);
 
 // Linux specific files
 #else
@@ -149,6 +154,11 @@
         act.sa_flags = 0;            \
         sigemptyset(&act.sa_mask);   \
         sigaction((SIG), &act, NULL);
+    #define ALERT   puts("\033[33m");
+    #define DANGER  puts("\033[31m");
+    #define STATUS  puts("\033[33m");
+    #define SUCCESS puts("\033[34m");
+    #define RESET   puts("\033[39m");
 #endif
 
 // derived data types

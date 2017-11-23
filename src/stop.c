@@ -25,6 +25,9 @@
 extern char* root;
 extern int sfd;
 extern client_t* cfdlist;
+#if defined(_WIN32) || defined(__WIN32__)
+    extern HANDLE hConsole;
+#endif
 
 /**
  * Stop server, deallocating any resources.
@@ -34,8 +37,10 @@ void stop(void)
     // time counter
     time_t epoch = time(NULL);
 
+    ALERT;
     // announce stop
-    printf("\r\033[33m%sStopping server\n\033[39m", ctime(&epoch));
+    printf("\r%sStopping server\n", ctime(&epoch));
+    RESET;
 
     // free root, which was allocated by realpath
     if (root != NULL)    free(root);
@@ -48,6 +53,11 @@ void stop(void)
 
     // flush output log
     fflush(stdout);
+
+    // Windows compatible log message [close]
+    #if defined(_WIN32) || defined(__WIN32__)
+        CloseHandle(hConsole);
+    #endif
 
     // stop server
     pthread_exit(EXIT_SUCCESS);

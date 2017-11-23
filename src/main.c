@@ -23,6 +23,11 @@
 // Help function
 static void help(void);
 
+// Windows compatible log message [global]
+#if defined(_WIN32) || defined(__WIN32__)
+    HANDLE hConsole;
+#endif
+
 // server's root
 char* root = NULL;
 int root_len = 0;
@@ -39,6 +44,11 @@ int main(int argc, char* argv[])
     // in the event of an error to indicate what went wrong"
     errno = 0;
     setprogname(argv[0]);
+
+    // Windows compatible log message [open]
+    #if defined(_WIN32) || defined(__WIN32__)
+        hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    #endif
 
     // Thread ID and Attributes
     pthread_attr_t tattr;
@@ -103,10 +113,8 @@ int main(int argc, char* argv[])
             pthread_attr_init(&tattr);
             if (pthread_create(&tid, NULL, process, cfd)) {
                 int errsv = errno;
-                printf("\033[31m");
-                printf("%sFollowing error has occured while creating thread\n%s",
+                fprintf(stderr, "%sFollowing error occured while creating thread\n%s",
                 ctime(&epoch), strerror(errsv));
-                printf("\033[39m\n");
                 error(*cfd, 500);
                 continue;
             }

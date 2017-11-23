@@ -21,7 +21,11 @@
 #include <serverX.h>
 
 // global variables
+
 extern client_t* cfdlist;
+#if defined(_WIN32) || defined(__WIN32__)
+    extern HANDLE hConsole;
+#endif
 
 /**
  * Creates new client info block and returns pointer to it's cfd
@@ -33,8 +37,10 @@ static int* create(int cfd, time_t tstamp)
     cli->cfd = cfd, cli->nreq = 1, cli->tstamp = tstamp;
     cli->next = cfdlist;
     cfdlist = cli;
-    printf("\033[34mCreated connection:  Client ID: %d  Last Used On: %s\033[39m",
+    STATUS;
+    printf("Created connection:  Client ID: %d  Last Used On: %s",
     cli->cfd, ctime(&cli->tstamp));
+    RESET;
     fflush(stdout);
     return &(cli->cfd);
 }
