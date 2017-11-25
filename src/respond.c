@@ -57,7 +57,7 @@ Server: serverX/%s (%s)\r\n%s\r\n";
         // red
         DANGER;
     }
-    printf("HTTP/1.1 %i %s", code, phrase);
+    printf("HTTP/1.1 %i %s\n", code, phrase);
     RESET;
     fflush(stdout);
 }

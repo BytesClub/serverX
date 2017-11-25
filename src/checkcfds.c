@@ -35,9 +35,7 @@ extern client_t* cfdlist;
 void checkcfds(bool status, time_t tstamp)
 {
     // zero connection
-    if (cfdlist == NULL) {
-        return;
-    }
+    if (cfdlist == NULL)    return;
 
     // default case
     client_t* cur = cfdlist;
@@ -48,6 +46,7 @@ void checkcfds(bool status, time_t tstamp)
         // if connection is timed out or maximum limit reached
         if (status || (tstamp - cur->tstamp) > KeepAliveTimeout || cur->nreq ==
         KeepAliveMaximum) {
+            if (cur == cfdlist)    cfdlist = next;
             // respond(cur->cfd, 200, "Connection: Close\r\n", NULL, 0);
             STATUS;
             printf("Closing connection:  Client ID: %d  Requests: %d  \

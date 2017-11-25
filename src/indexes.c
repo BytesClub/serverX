@@ -26,19 +26,23 @@
  */
 char* indexes(const char* path)
 {
-    int path_len = strlen(path);
-    char *file = malloc(path_len + 11); // extra space for index.[php/html]
+    const int path_len = strlen(path);
+    const int index_len = path_len + 11; // extra space for index.[php/html]
+    char* const file = malloc(index_len);
     if (file == NULL)    return NULL;
+    memset(file, '\0', index_len);
     strncpy(file, path, path_len);
-    strncat(file, "index.php", 10);
-
+    strncpy(file + path_len, "index.php", 9);
     if (! access(file, F_OK)) {
         // index.php exists
         return file;
-    } else if (strncat(strstr(file, ".php"), ".html", 11) && ! access(file, F_OK)) {
+    }
+    strncpy(file + path_len, "index.html", 10);
+    if (! access(file, F_OK)) {
         // index.html exists
         return file;
     }
     //default return
+    free(file);
     return NULL;
 }

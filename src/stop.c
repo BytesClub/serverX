@@ -44,17 +44,29 @@ void stop(void)
     RESET;
 
     // free root, which was allocated by realpath
-    if (root != NULL)    free(root);
+    if (root != NULL) {
+        free(root);
+        root = NULL;
+    }
 
     // clear client socket allocated by find
-    if (cfdlist != NULL)    checkcfds(true, epoch);
+    if (cfdlist != NULL) {
+        checkcfds(true, epoch);
+        cfdlist = NULL;
+    }
 
     // close server socket
-    if (sfd != -1)    close(sfd);
+    if (sfd != -1) {
+        close(sfd);
+        sfd = -1;
+    }
 
     // flush output log
     fflush(stdout);
-    if (logger)    fclose(stdout);
+    if (logger) {
+        fclose(stdout);
+        logger = false;
+    }
 
     // Windows compatible log message [close]
     #if defined(_WIN32) || defined(__WIN32__)
