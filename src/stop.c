@@ -40,7 +40,7 @@ void stop(void)
 
     ALERT;
     // announce stop
-    printf("\r%sStopping server\n", ctime(&epoch));
+    printf("%sStopping server\n", ctime(&epoch));
     RESET;
 
     // free root, which was allocated by realpath
