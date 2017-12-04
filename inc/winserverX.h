@@ -75,7 +75,6 @@ int scandir_full_path(const char *path, struct dirent ***e,
 #endif
 
 DWORD getppid();
-int getuid(void);
 
 
 // Header for libbsd

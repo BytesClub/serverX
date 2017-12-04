@@ -114,6 +114,7 @@
         #undef _WIN32_WINNT
     #endif
     #define _WIN32_WINNT 0x0501
+    #define getuid() 0
     #ifndef _WINDOWS_H
         #include <windows.h>
     #endif

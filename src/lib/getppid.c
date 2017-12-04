@@ -40,9 +40,3 @@
         return 0;
     }
 #endif
-
-// Dummy method to avoid compile error
-int getuid(void)
-{
-    return 0;
-}
