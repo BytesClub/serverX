@@ -20,6 +20,9 @@
 // include header
 #include <serverX.h>
 
+// global variable
+extern bool logger;
+
 /**
  * Handles signals.
  */
@@ -27,7 +30,7 @@ void handler(int signal)
 {
     // control-c
     if (signal == SIGINT) {
-        putchar('\r');
+        if (! logger)    putchar('\r');
         stop();
     }
 }
