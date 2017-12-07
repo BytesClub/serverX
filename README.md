@@ -20,7 +20,7 @@ Installation
 * Install dependencies and toolchain
 ```
 $ apt-get update
-$ apt-get install build-essential zlib1g-dev libbsd-dev php7.0-cgi
+$ apt-get install build-essential zlib1g-dev php7.0-cgi
 ```
 
 * Get Source Code
