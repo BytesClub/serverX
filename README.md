@@ -51,7 +51,7 @@ http://localhost:8080
 Contributing
 ================
 
-* Reference: [Contributing Guidelines](/CONTRIBUTING.md)
+* Reference: [Contributing Guidelines](.github/CONTRIBUTING.md)
   * Every commit must follow the following standard:
 
   ```
