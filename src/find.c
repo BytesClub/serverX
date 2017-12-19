@@ -58,11 +58,6 @@ int* find(int cfd, time_t tstamp)
         return NULL;
     }
 
-    // zero connection
-    if (cfdlist == NULL) {
-        return create(cfd, tstamp);
-    }
-
     // general case
     for (client_t* cur = cfdlist; cur != NULL; cur = cur->next) {
         // found client id, already exists

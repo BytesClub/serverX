@@ -34,10 +34,7 @@ extern client_t* cfdlist;
  */
 void checkcfds(bool status, time_t tstamp)
 {
-    // zero connection
-    if (cfdlist == NULL)    return;
-
-    // default case
+    client_t* prev = NULL;
     client_t* cur = cfdlist;
     client_t* next;
     while (cur != NULL) {
@@ -46,7 +43,11 @@ void checkcfds(bool status, time_t tstamp)
         // if connection is timed out or maximum limit reached
         if (status || (tstamp - cur->tstamp) > KeepAliveTimeout || cur->nreq ==
         KeepAliveMaximum) {
-            if (cur == cfdlist)    cfdlist = next;
+            if (cur == cfdlist) {
+                cfdlist = next;
+            } else {
+                prev->next = next;
+            }
             // respond(cur->cfd, 200, "Connection: Close\r\n", NULL, 0);
             STATUS;
             printf("Closing connection:  Client ID: %d  Requests: %d  \
@@ -57,6 +58,7 @@ Last Used On: %s", cur->cfd, cur->nreq, ctime(&(cur->tstamp)));
             fflush(stdout);
         }
 
+        prev = cur;
         cur = next;
     }
 }

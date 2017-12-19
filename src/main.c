@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
     // in the event of an error to indicate what went wrong"
     errno = 0;
     setprogname(argv[0]);
+    atexit(stop);
 
     // Windows compatible log message [open]
     #if defined(_WIN32) || defined(__WIN32__)

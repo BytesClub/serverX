@@ -31,6 +31,6 @@ void handler(int signal)
     // control-c
     if (signal == SIGINT) {
         if (! logger)    putchar('\r');
-        stop();
+        pthread_exit(EXIT_SUCCESS);
     }
 }

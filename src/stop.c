@@ -72,7 +72,4 @@ void stop(void)
     #if defined(_WIN32) || defined(__WIN32__)
         CloseHandle(hConsole);
     #endif
-
-    // stop server
-    pthread_exit(EXIT_SUCCESS);
 }
