@@ -79,6 +79,6 @@ help:
 
 # House-keeping
 clean:
-	@rm -rf core $(EXE) bin *.o *.exe
+	@rm -rf core $(EXE) $(BIN) *.o *.exe
 
 .PHONY: test help clean
