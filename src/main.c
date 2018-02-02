@@ -86,9 +86,16 @@ int main(int argc, char* argv[])
         }
     }
 
-    // ensure port is a non-negative short and path to server's root is specified
-    if (port < 0 || port > SHRT_MAX || argv[optind] == NULL ||
-        strlen(argv[optind]) == 0) {
+    // ensure port is a non-negative short
+    if (port < 0 || port > SHRT_MAX) {
+        fprintf(stderr, "Error: Invalid port recieved\n");
+        // announce usage
+        help();
+    }
+
+    // ensure path to server's root is specified
+    if(argv[optind] == NULL || strlen(argv[optind]) == 0) {
+        fprintf(stderr, "Error: Cannot found root path\n");
         // announce usage
         help();
     }
