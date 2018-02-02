@@ -21,7 +21,11 @@
 #include <serverX.h>
 
 // global variable
+
 extern bool logger;
+#if defined(_WIN32) || defined(__WIN32__)
+    extern HANDLE hConsole;
+#endif
 
 /**
  * Handles signals.
@@ -31,6 +35,14 @@ void handler(int signal)
     // control-c
     if (signal == SIGINT) {
         if (! logger)    putchar('\r');
+
+        // time counter
+        time_t epoch = time(NULL);
+
+        ALERT;
+        // announce stop
+        printf("%sStopping server\n", ctime(&epoch));
+        RESET;
         pthread_exit(EXIT_SUCCESS);
     }
 }

@@ -35,14 +35,6 @@ extern bool logger;
  */
 void stop(void)
 {
-    // time counter
-    time_t epoch = time(NULL);
-
-    ALERT;
-    // announce stop
-    printf("%sStopping server\n", ctime(&epoch));
-    RESET;
-
     // free root, which was allocated by realpath
     if (root != NULL) {
         free(root);
@@ -51,7 +43,7 @@ void stop(void)
 
     // clear client socket allocated by find
     if (cfdlist != NULL) {
-        checkcfds(true, epoch);
+        checkcfds(true, (time_t)0);
         cfdlist = NULL;
     }
 
