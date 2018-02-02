@@ -34,6 +34,7 @@ void* process(void *args)
 {
     // get client socket id
     int cfd = *((int*) args);
+    free(args);
 
     // a message and its length
     char* message = NULL;
@@ -186,6 +187,6 @@ void* process(void *args)
         free(message);
         message = NULL;
     }
-    
+
     return NULL;
 }

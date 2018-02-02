@@ -209,9 +209,9 @@ void error(int cfd, unsigned short code);
  * @ brief:          Finds memory location for particular client.
  * @ param cfd:      Current client socket descriptor.
  * @ param tstamp:   Timstamp of the current request.
- * @ returns:        Pointer to cfd in client info block.
+ * @ returns:        Integer value of cfd in client info block.
  */
-int* find(int cfd, time_t tstamp);
+int find(int cfd, time_t tstamp);
 
 /**
  * @ function:       freedir

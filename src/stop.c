@@ -24,6 +24,7 @@
 
 extern char* root;
 extern int sfd;
+extern int* cfd;
 extern client_t* cfdlist;
 extern bool logger;
 #if defined(_WIN32) || defined(__WIN32__)
@@ -51,6 +52,12 @@ void stop(void)
     if (sfd != -1) {
         close(sfd);
         sfd = -1;
+    }
+
+    // clear client socket allocated by main
+    if (cfd != NULL) {
+        free(cfd);
+        cfd = NULL;
     }
 
     // flush output log

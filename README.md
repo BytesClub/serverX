@@ -74,11 +74,9 @@ Contributing
   ```
   $ git remote add upstream https://github.com/BytesClub/serverX.git
   $ git fetch upstream
-  $ git checkout master
-  $ git rebase upstream/master
-  $ git push
   $ git checkout [-b] <your-branch>
-  $ git rebase origin/master
+  $ git rebase upstream/master --strategy recursive -X theirs
+  $ git push origin <your-branch> [-u]
   ```
   * Make changes and commit them according to the guideline provided.
   * **Do not commit anything to the master branch.**
@@ -92,13 +90,13 @@ Contributing
   ```
   * Update with latest at **master** branch.
   ```
-  $ git rebase origin/master
+  $ git rebase origin/master --strategy recursive -X theirs
   ```
   * Make changes and commit them according to the guideline provided.
   * **Do not commit anything to the master branch.**
   * Format patch from the commits you've created.
   ```
-  $ git format-patch commit -<N> -o ../serverX-patches
+  $ git format-patch <commit> -<N> --cc="Progyan Bhattacharya <progyanb@acm.org>" -o ../serverX-patches
   ```
   * Send email to `bytes-club@googlegroups.com` containing the patch.
   ```

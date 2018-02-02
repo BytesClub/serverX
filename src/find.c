@@ -30,12 +30,14 @@ extern client_t* cfdlist;
 #endif
 
 /**
- * Creates new client info block and returns pointer to it's cfd
+ * Creates new client info block and it's cfd value
  */
-static int* create(int cfd, time_t tstamp)
+static int create(int cfd, time_t tstamp)
 {
     client_t* cli = malloc(sizeof(client_t));
-    if (cli == NULL)    return NULL;
+    if (cli == NULL) {
+        return -1;
+    }
     cli->cfd = cfd, cli->nreq = 1, cli->tstamp = tstamp;
     cli->next = cfdlist;
     cfdlist = cli;
@@ -44,18 +46,18 @@ static int* create(int cfd, time_t tstamp)
     cli->cfd, ctime(&cli->tstamp));
     RESET;
     fflush(stdout);
-    return &(cli->cfd);
+    return cli->cfd;
 }
 
 /**
  * Finds memory location for particular client.
- * Returns pointer to cfd integer in client info block.
+ * integer value of cfd integer in client info block.
  */
-int* find(int cfd, time_t tstamp)
+int find(int cfd, time_t tstamp)
 {
     // invalid connection
     if (cfd == -1) {
-        return NULL;
+        return -1;
     }
 
     // general case
@@ -64,7 +66,7 @@ int* find(int cfd, time_t tstamp)
         if (cur->cfd == cfd) {
             cur->nreq++;
             cur->tstamp = tstamp;
-            return &(cur->cfd);
+            return cur->cfd;
         }
     }
     return create(cfd, tstamp);

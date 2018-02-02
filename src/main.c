@@ -35,6 +35,7 @@ int root_len = 0;
 // file descriptor for sockets
 
 int sfd = -1;
+int* cfd = NULL;
 client_t* cfdlist = NULL;
 
 // flag that is set true iff stdout is redirected
@@ -114,14 +115,21 @@ int main(int argc, char* argv[])
 
     // accept connections one at a time
     while (true) {
+        // current timestamp
         time_t epoch = time(NULL);
+
+        // allocate memory to hold cfd
+        cfd = malloc(sizeof(int));
+        if (cfd == NULL) {
+            continue;
+        }
 
         // update client connection info
         checkcfds(false, epoch);
 
         // check whether client has connected
-        int* cfd = find(connected(), epoch);
-        if (cfd != NULL) {
+        *cfd = find(connected(), epoch);
+        if (*cfd != -1) {
             pthread_t tid;
             pthread_attr_init(&tattr);
             if (pthread_create(&tid, NULL, process, cfd)) {
@@ -129,9 +137,14 @@ int main(int argc, char* argv[])
                 fprintf(stderr, "%sFollowing error occured while creating thread\n%s",
                 ctime(&epoch), strerror(errsv));
                 error(*cfd, 500);
+                free(cfd);
+                cfd = NULL;
                 continue;
             }
             pthread_detach(tid);
+        } else {
+            free(cfd);
+            cfd = NULL;
         }
     }
 }
