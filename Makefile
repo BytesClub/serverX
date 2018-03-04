@@ -15,7 +15,7 @@
 # ==============================================================================
 
 # Define Compiler
-CC = gcc
+CC ?= gcc
 
 # Flags for Compiler
 CFLAGS = -ggdb3 -O0 -O3 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow -U__STRICT_ANSI__ -pedantic
@@ -56,20 +56,28 @@ endif
 OBJECT = $(addprefix $(BIN)/, $(notdir $(SOURCE:.c=.o)))
 
 # Default Target
+all: $(EXE)
+
 $(EXE): $(OBJECT)
-	$(CC) $^ -o $@ $(LFLAGS)
+	@echo "  LD    $@    $(LFLAGS)"
+	@$(CC) $^ -o $@ $(LFLAGS)
 
 $(BIN)/%.o: %.c $(HEADER)
+	@echo "  CC    $@"
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) $(DIR) -c $< -o $@
+	@$(CC) $(CFLAGS) $(DIR) -c $< -o $@
 
 $(INC)/build.h: $(SOURCE)
-	./build.sh
+	@./build.sh
+
+.PHONY: all
 
 # Test Option
 test: $(EXE) $(TST)
 	@echo "Testing of application started."
-	$^
+	$^&
+
+.PHONY: test
 
 # Help Option
 help:
@@ -77,8 +85,11 @@ help:
 	@echo "Source: $(SOURCE)"
 	@echo "Object: $(OBJECT)"
 
+.PHONY: help
+
 # House-keeping
 clean:
+	@echo "  CLEAN    $(EXE)"
 	@rm -rf core $(EXE) $(BIN) *.o *.exe
 
-.PHONY: test help clean
+.PHONY: clean
