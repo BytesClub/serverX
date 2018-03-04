@@ -15,7 +15,7 @@
 # ==============================================================================
 
 # Define Compiler
-CC = gcc
+CC ?= gcc
 
 # Flags for Compiler
 CFLAGS = -ggdb3 -O0 -O3 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow -U__STRICT_ANSI__ -pedantic
@@ -31,12 +31,20 @@ VPATH = $(SRC)
 EXE = $(BIN)/$(PROG)
 PROG = serverX
 
+# PREFIX is environment variable, but if it is not set, then set default value
+ifeq ($(prefix),)
+	prefix = /usr/local
+endif
+ifeq ($(PREFIX),)
+	PREFIX = $(prefix)
+endif
+
 # Directories
 BIN = bin
 INC = inc
 LIB = src/lib
 SRC = src
-TST = public
+TST = test
 
 # Header(s)
 HEADER = $(INC)/serverX.h $(INC)/build.h
@@ -56,20 +64,35 @@ endif
 OBJECT = $(addprefix $(BIN)/, $(notdir $(SOURCE:.c=.o)))
 
 # Default Target
+all: $(EXE)
+
 $(EXE): $(OBJECT)
-	$(CC) $^ -o $@ $(LFLAGS)
+	@echo "  LD    $@    $(LFLAGS)"
+	@$(CC) $^ -o $@ $(LFLAGS)
 
 $(BIN)/%.o: %.c $(HEADER)
+	@echo "  CC    $@"
 	@mkdir -p $(BIN)
-	$(CC) $(CFLAGS) $(DIR) -c $< -o $@
+	@$(CC) $(CFLAGS) $(DIR) -c $< -o $@
 
 $(INC)/build.h: $(SOURCE)
-	./build.sh
+	@./build.sh
+
+.PHONY: all
+
+# Install Option
+install: $(EXE)
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	cp $< $(DESTDIR)$(PREFIX)/bin/$(PROG)
+
+.PHONY: install
 
 # Test Option
 test: $(EXE) $(TST)
 	@echo "Testing of application started."
-	$^
+	$^&
+
+.PHONY: test
 
 # Help Option
 help:
@@ -77,8 +100,11 @@ help:
 	@echo "Source: $(SOURCE)"
 	@echo "Object: $(OBJECT)"
 
+.PHONY: help
+
 # House-keeping
 clean:
+	@echo "  CLEAN    $(EXE)"
 	@rm -rf core $(EXE) $(BIN) *.o *.exe
 
-.PHONY: test help clean
+.PHONY: clean

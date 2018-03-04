@@ -9,7 +9,7 @@ serverX
 [![Mailing List](https://img.shields.io/badge/Mailing%20List-BytesClub-blue.svg)](mailto:bytes-club@googlegroups.com)
 [![gitter](https://badges.gitter.im/gitterHQ/gitterHQ.github.io.svg)](https://gitter.im/Bytes_Club/General)
 
-![serverX Logo](http://codeprogyan.me/img/portfolio/serverx.jpg)
+![serverX Logo](http://progyan1997.github.io/img/portfolio/serverx.jpg)
 
 A HTTP/HTTPS Web Server Handler by (C) Bytes Club
 
