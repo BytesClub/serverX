@@ -15,7 +15,7 @@
 ===============================================================================*/
 
 // Main Source File
-// serverX.c
+// main.c
 
 // include header
 #include <serverX.h>
@@ -115,9 +115,6 @@ int main(int argc, char* argv[])
 
     // accept connections one at a time
     while (true) {
-        // current timestamp
-        time_t epoch = time(NULL);
-
         // allocate memory to hold cfd
         cfd = malloc(sizeof(int));
         if (cfd == NULL) {
@@ -125,17 +122,16 @@ int main(int argc, char* argv[])
         }
 
         // update client connection info
-        checkcfds(false, epoch);
+        checkcfds(false, time(NULL));
 
         // check whether client has connected
-        *cfd = find(connected(), epoch);
+        *cfd = find(connected(), time(NULL));
         if (*cfd != -1) {
             pthread_t tid;
             pthread_attr_init(&tattr);
             if (pthread_create(&tid, NULL, process, cfd)) {
                 int errsv = errno;
-                fprintf(stderr, "%sFollowing error occured while creating thread\n%s",
-                ctime(&epoch), strerror(errsv));
+                fprintf(stderr, "Following error occured while creating thread\n%s", strerror(errsv));
                 error(*cfd, 500);
                 free(cfd);
                 cfd = NULL;

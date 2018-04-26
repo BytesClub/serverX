@@ -61,11 +61,10 @@ void* process(void *args)
         line[needle - haystack + 2] = '\0';
 
         // log request-line
-        time_t epoch = time(NULL);
         unsigned int tid = (unsigned int)pthread_self();
-        printf("%sClient ID: %d  Thread ID: %u\n", ctime(&epoch), cfd, tid);
-        printf("%s", line);
-        fflush(stdout);
+        char log_message[1024];
+        sprintf(log_message, "Client ID: %d  Thread ID: %u\n%s", cfd, tid, line);
+        printl(__func__, log_message, 0);
 
         // parse request-line
         char abs_path[LimitRequestLine + 1] = { 0 };

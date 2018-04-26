@@ -20,13 +20,6 @@
 // include header
 #include <serverX.h>
 
-// global variable
-#if defined(_WIN32) || defined(__WIN32__)
-    extern HANDLE hConsole;
-#else
-    extern bool logger;
-#endif
-
 /**
  * Responds to a client with status code, headers, and body of specified length.
  */
@@ -50,14 +43,8 @@ Server: serverX/%s (%s)\r\n%s\r\n";
     if (write(cfd, body, length) == -1)    return;
 
     // log response line
-    if (code == 200) {
-        // green
-        SUCCESS;
-    } else {
-        // red
-        DANGER;
-    }
-    printf("HTTP/1.1 %i %s\n", code, phrase);
-    RESET;
-    fflush(stdout);
+    int status = code == 200 ? 3 : 1;
+    char message[1024];
+    sprintf(message, "HTTP/1.1 %i %s\n", code, phrase);
+    printl(__func__, message, status);
 }

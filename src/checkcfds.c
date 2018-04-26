@@ -21,13 +21,7 @@
 #include <serverX.h>
 
 // global variables
-
 extern client_t* cfdlist;
-#if defined(_WIN32) || defined(__WIN32__)
-    extern HANDLE hConsole;
-#else
-    extern bool logger;
-#endif
 
 /**
  * Checks if a connection needs to be closed.
@@ -49,13 +43,12 @@ void checkcfds(bool status, time_t tstamp)
                 prev->next = next;
             }
             // respond(cur->cfd, 200, "Connection: Close\r\n", NULL, 0);
-            STATUS;
-            printf("Closing connection:  Client ID: %d  Requests: %d  \
+            char message[1024];
+            sprintf(message, "Closing connection:  Client ID: %d  Requests: %d  \
 Last Used On: %s", cur->cfd, cur->nreq, ctime(&(cur->tstamp)));
-            RESET;
+            printl(__func__, message, 0);
             close(cur->cfd);
             free(cur);
-            fflush(stdout);
         }
 
         prev = cur;

@@ -134,11 +134,6 @@
         #define popen(x, y)  _popen(x, y)
         #define pclose(x)    _pclose(x)
     #endif
-    #define ALERT   SetConsoleTextAttribute(hConsole, 6);
-    #define DANGER  SetConsoleTextAttribute(hConsole, 4);
-    #define STATUS  SetConsoleTextAttribute(hConsole, 1);
-    #define SUCCESS SetConsoleTextAttribute(hConsole, 2);
-    #define RESET   SetConsoleTextAttribute(hConsole, 7);
 
 // Linux specific files
 #else
@@ -155,11 +150,6 @@
         act.sa_flags = 0;            \
         sigemptyset(&act.sa_mask);   \
         sigaction((SIG), &act, NULL);
-    #define ALERT   if (! logger) printf("\033[33m");
-    #define DANGER  if (! logger) printf("\033[31m");
-    #define STATUS  if (! logger) printf("\033[34m");
-    #define SUCCESS if (! logger) printf("\033[32m");
-    #define RESET   if (! logger) printf("\033[39m\n");
 #endif
 
 // derived data types
@@ -302,6 +292,16 @@ const char* lookup(const char* path);
  * @ returns:       True iff action successful, false otherwise.
  */
 bool parse(int cfd, const char* line, char* path, char* query);
+
+/**
+ * @ function:      printl
+ * @ brief:         Prints log information into stdout/logfile.
+ * @ param module:  Function/module name from where log generates.
+ * @ param message: Log message content.
+ * @ param status:  Priority of the log message.
+ * @ returns:       Number of characters printed.
+ */
+int printl(const char* module, const char* message, short status);
 
 /**
  * @ function:      process

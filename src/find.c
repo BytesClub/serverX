@@ -21,13 +21,7 @@
 #include <serverX.h>
 
 // global variables
-
 extern client_t* cfdlist;
-#if defined(_WIN32) || defined(__WIN32__)
-    extern HANDLE hConsole;
-#else
-    extern bool logger;
-#endif
 
 /**
  * Creates new client info block and it's cfd value
@@ -41,11 +35,10 @@ static int create(int cfd, time_t tstamp)
     cli->cfd = cfd, cli->nreq = 1, cli->tstamp = tstamp;
     cli->next = cfdlist;
     cfdlist = cli;
-    STATUS;
-    printf("Created connection:  Client ID: %d  Last Used On: %s",
+    char message[1024];
+    sprintf(message, "Created connection:  Client ID: %d  Last Used On: %s",
     cli->cfd, ctime(&cli->tstamp));
-    RESET;
-    fflush(stdout);
+    printl(__func__, message, 0);
     return cli->cfd;
 }
 

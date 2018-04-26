@@ -24,20 +24,12 @@
 
 extern char* root;
 extern int sfd, root_len;
-#if defined(_WIN32) || defined(__WIN32__)
-    extern HANDLE hConsole;
-#else
-    extern bool logger;
-#endif
 
 /**
  * Starts server on specified port rooted at path.
  */
 void start(short port, const char* path)
 {
-    // time counter
-    time_t epoch;
-
     // path to server's root
     root = realpath(path, NULL);
     if (root == NULL)    stop();
@@ -49,22 +41,19 @@ void start(short port, const char* path)
     // Process ID
     pid_t pid = getpid(), ppid = getppid();
 
-    ALERT;
     // announce PID
-    time(&epoch);
-    printf("%sStarting Process: %lli\tParent: %lli\n", ctime(&epoch), (long long)pid, (long long)ppid);
+    char message[1024];
+    sprintf(message, "Starting Process: %lli\tParent: %lli\n", (long long)pid, (long long)ppid);
+    printl(__func__, message, 0);
+    
     // announce root
-    time(&epoch);
-    printf("%sUsing %s for server's root\n", ctime(&epoch), root);
-    RESET;
+    sprintf(message, "Using %s for server's root\n", root);
+    printl(__func__, message, 0);
 
     // create a socket
     sfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sfd == -1) {
-        DANGER;
-        time(&epoch);
-        printf("%sFailed to create Socket\n", ctime(&epoch));
-        RESET;
+        printl(__func__, "Failed to create Socket\n", 1);
         stop();
     }
 
@@ -79,10 +68,8 @@ void start(short port, const char* path)
     serv_addr.sin_port = htons(port);
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     if (bind(sfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) == -1) {
-        DANGER;
-        time(&epoch);
-        printf("%sPort %i already in use\n", ctime(&epoch), port);
-        RESET;
+        sprintf(message, "Port %i already in use\n", port);
+        printl(__func__, message, 1);
         stop();
     }
 
@@ -93,13 +80,8 @@ void start(short port, const char* path)
     struct sockaddr_in addr;
     socklen_t addrlen = sizeof(addr);
     if (getsockname(sfd, (struct sockaddr*) &addr, &addrlen) == -1)    stop();
-    SUCCESS;
-    time(&epoch);
-    printf("%sStarted Process: %lli\n", ctime(&epoch), (long long)pid);
-    time(&epoch);
-    printf("%sListening on port %i", ctime(&epoch), ntohs(addr.sin_port));
-    RESET;
-
-    // flush output log
-    fflush(stdout);
+    sprintf(message, "Started Process: %lli\n", (long long)pid);
+    printl(__func__, message, 3);
+    sprintf(message, "Listening on port %i", ntohs(addr.sin_port));
+    printl(__func__, message, 3);
 }
