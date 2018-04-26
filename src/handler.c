@@ -21,6 +21,8 @@
 #include <serverX.h>
 
 // global variable
+
+extern pid_t pid;
 extern bool logger;
 
 /**
@@ -30,10 +32,12 @@ void handler(int signal)
 {
     // control-c
     if (signal == SIGINT) {
-        if (! logger)    putchar('\r');
+        if (pid == getpid()) {
+            if (! logger)    putchar('\r');
         
-        // announce stop
-        printl(__func__, "Stopping server", 2);
-        pthread_exit(EXIT_SUCCESS);
+            // announce stop
+            printl("interrupt", "Stopping server", 2);
+        }
+        stop();
     }
 }

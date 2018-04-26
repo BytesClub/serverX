@@ -22,6 +22,7 @@
 
 // global variables
 
+extern pid_t pid;
 extern char* root;
 extern int sfd, root_len;
 
@@ -38,17 +39,14 @@ void start(short port, const char* path)
     // ensure root is executable
     if (access(root, X_OK) == -1)    stop();
 
-    // Process ID
-    pid_t pid = getpid(), ppid = getppid();
-
     // announce PID
-    char message[1024];
-    sprintf(message, "Starting Process: %lli\tParent: %lli\n", (long long)pid, (long long)ppid);
-    printl(__func__, message, 0);
-    
+    char message[BYTES];
+    sprintf(message, "Starting Process: %lli\n", (long long)pid);
+    printl(__func__, message, 2);
+
     // announce root
     sprintf(message, "Using %s for server's root\n", root);
-    printl(__func__, message, 0);
+    printl(__func__, message, 2);
 
     // create a socket
     sfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -82,6 +80,6 @@ void start(short port, const char* path)
     if (getsockname(sfd, (struct sockaddr*) &addr, &addrlen) == -1)    stop();
     sprintf(message, "Started Process: %lli\n", (long long)pid);
     printl(__func__, message, 3);
-    sprintf(message, "Listening on port %i", ntohs(addr.sin_port));
+    sprintf(message, "Listening on port %i\n", ntohs(addr.sin_port));
     printl(__func__, message, 3);
 }

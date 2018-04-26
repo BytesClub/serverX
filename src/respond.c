@@ -42,9 +42,10 @@ Server: serverX/%s (%s)\r\n%s\r\n";
     // respond with body
     if (write(cfd, body, length) == -1)    return;
 
-    // log response line
+    // log response line [3: Success(Green)  1: Danger(Red)]
     int status = code == 200 ? 3 : 1;
-    char message[1024];
-    sprintf(message, "HTTP/1.1 %i %s\n", code, phrase);
+    char message[BYTES];
+    sprintf(message, "Client ID: %i\t Subprocess ID: %lli\n\
+HTTP/1.1 %i %s\n", cfd, (long long)getpid(), code, phrase);
     printl(__func__, message, status);
 }

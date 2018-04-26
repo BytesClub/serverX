@@ -34,6 +34,7 @@ const char* lookup(const char* path)
     if (! strcasecmp(s, ".html"))        return "text/html";
     else if (! strcasecmp(s, ".css"))    return "text/css";
     else if (! strcasecmp(s, ".js"))     return "text/javascript";
+    else if (! strcasecmp(s, ".json"))   return "application/json";
     else if (! strcasecmp(s, ".gif"))    return "image/gif";
     else if (! strcasecmp(s, ".png"))    return "image/png";
     else if (! strcasecmp(s, ".jpg"))    return "image/jpeg";

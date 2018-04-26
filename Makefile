@@ -21,7 +21,7 @@ CC ?= gcc
 CFLAGS = -ggdb3 -O0 -O3 -std=c11 -Wall -Werror -Wextra -Wno-sign-compare -Wshadow -U__STRICT_ANSI__ -pedantic
 
 # Flags for Linker
-LFLAGS = -lm -pthread
+LFLAGS = -lm
 
 # Flags for Directories
 DIR = -I$(INC)

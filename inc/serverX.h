@@ -41,12 +41,6 @@
 // number of bytes for buffers
 #define BYTES 512
 
-// allocated time for keep alive connection
-#define KeepAliveTimeout 5
-
-// available request number for keep alive connection
-#define KeepAliveMaximum 5
-
 // C++ header compatibility [open]
 #ifdef _cplusplus
     extern "C" {
@@ -152,31 +146,7 @@
         sigaction((SIG), &act, NULL);
 #endif
 
-// derived data types
-
-/**
- * @ data-type:      client_t
- * @ brief:          Holds information about currently connected clients.
- * @ member cfd:     Client socket descriptor.
- * @ member nreq:    Number of request recieved from that client.
- * @ member tstamp:  Last timestamp the client has requested.
- * @ member next:    Pointer to next client info block.
- */
-typedef struct client_t {
-    int cfd, nreq;
-    time_t tstamp;
-    struct client_t* next;
-} client_t;
-
 // prototypes
-
-/**
- * @ function:       checkcfds
- * @ brief:          Checks if a connection needs to be closed.
- * @ param status:   False if regular check, True if delete all.
- * @ param tstamp:   Current timestamp.
- */
-void checkcfds(bool status, time_t tstamp);
 
 /**
  * @ function:       connected
@@ -193,15 +163,6 @@ int connected(void);
  * @ param code:     The HTTP error code.
  */
 void error(int cfd, unsigned short code);
-
-/**
- * @ function:       find
- * @ brief:          Finds memory location for particular client.
- * @ param cfd:      Current client socket descriptor.
- * @ param tstamp:   Timstamp of the current request.
- * @ returns:        Integer value of cfd in client info block.
- */
-int find(int cfd, time_t tstamp);
 
 /**
  * @ function:       freedir
@@ -306,10 +267,10 @@ int printl(const char* module, const char* message, short status);
 /**
  * @ function:      process
  * @ brief:         Contains implementations for request handling.
- * @ param args:    Any argument sent as void pointer.
+ * @ param cfd:     Client socket descriptor.
  * @ returns:       Return value is stored in memory, and address is returned.
  */
-void* process(void* args);
+void process(int cfd);
 
 /**
  * @ function:      reason

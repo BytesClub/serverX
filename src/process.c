@@ -30,12 +30,8 @@ extern int root_len;
  * To be used by each thread independently
  * Reference: http://man7.org/linux/man-pages/man7/pthreads.7.html
  */
-void* process(void *args)
+void process(int cfd)
 {
-    // get client socket id
-    int cfd = *((int*) args);
-    free(args);
-
     // a message and its length
     char* message = NULL;
     size_t length = 0;
@@ -54,17 +50,17 @@ void* process(void *args)
             free(message);
             message = NULL;
             close(cfd);
-            return NULL;
+            exit(EXIT_FAILURE);
         }
         char line[needle - haystack + 2 + 1];
         strncpy(line, haystack, needle - haystack + 2);
         line[needle - haystack + 2] = '\0';
 
         // log request-line
-        unsigned int tid = (unsigned int)pthread_self();
-        char log_message[1024];
-        sprintf(log_message, "Client ID: %d  Thread ID: %u\n%s", cfd, tid, line);
-        printl(__func__, log_message, 0);
+        char log_message[BYTES];
+        sprintf(log_message, "Client ID: %i  Subprocess ID: %lli\n%s",
+            cfd, (long long)getpid(), line);
+        printl("request", log_message, 0);
 
         // parse request-line
         char abs_path[LimitRequestLine + 1] = { 0 };
@@ -77,7 +73,7 @@ void* process(void *args)
                 free(message);
                 message = NULL;
                 close(cfd);
-                return NULL;
+                exit(EXIT_FAILURE);
             }
 
             // resolve absolute-path to local path
@@ -89,7 +85,7 @@ void* process(void *args)
                 free(message);
                 message = NULL;
                 close(cfd);
-                return NULL;
+                exit(EXIT_FAILURE);
             }
             memset(path, 0, root_len + p_len + 1);
             strncpy(path, root, root_len);
@@ -104,7 +100,7 @@ void* process(void *args)
                 free(message);
                 message = NULL;
                 close(cfd);
-                return NULL;
+                exit(EXIT_FAILURE);
             }
 
             // if path to directory
@@ -122,7 +118,7 @@ void* process(void *args)
                     free(message);
                     message = NULL;
                     close(cfd);
-                    return NULL;
+                    exit(EXIT_FAILURE);
                 }
 
                 // use path/index.php or path/index.html, if present, instead of directory's path
@@ -140,7 +136,7 @@ void* process(void *args)
                     free(message);
                     message = NULL;
                     close(cfd);
-                    return NULL;
+                    exit(EXIT_SUCCESS);
                 }
             }
 
@@ -154,7 +150,7 @@ void* process(void *args)
                 free(message);
                 message = NULL;
                 close(cfd);
-                return NULL;
+                exit(EXIT_FAILURE);
             }
 
             // interpret PHP script at path
@@ -164,6 +160,8 @@ void* process(void *args)
                 path = NULL;
                 free(message);
                 message = NULL;
+                close(cfd);
+                exit(EXIT_SUCCESS);
             } else {
                 // transfer file at path
                 transfer(cfd, path, type);
@@ -171,21 +169,20 @@ void* process(void *args)
                 path = NULL;
                 free(message);
                 message = NULL;
+                close(cfd);
+                exit(EXIT_SUCCESS);
             }
+        } else {
+            error(cfd, 400);
+            free(path);
+            path = NULL;
+            free(message);
+            message = NULL;
+            close(cfd);
+            exit(EXIT_FAILURE);
         }
     }
 
-    // free last path, if any
-    if (path != NULL) {
-        free(path);
-        path = NULL;
-    }
-
-    // free last message, if any
-    if (message != NULL) {
-        free(message);
-        message = NULL;
-    }
-
-    return NULL;
+    /* NONREACHABLE*/
+    exit(EXIT_FAILURE);
 }

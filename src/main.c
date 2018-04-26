@@ -23,23 +23,23 @@
 // Help function
 static void help(void);
 
-// Windows compatible log message [global]
-#if defined(_WIN32) || defined(__WIN32__)
-    HANDLE hConsole;
-#endif
+// Process ID
+pid_t pid = -1;
 
 // server's root
 char* root = NULL;
 int root_len = 0;
 
 // file descriptor for sockets
-
 int sfd = -1;
-int* cfd = NULL;
-client_t* cfdlist = NULL;
 
 // flag that is set true iff stdout is redirected
 bool logger = false;
+
+// Windows compatible log message [global]
+#if defined(_WIN32) || defined(__WIN32__)
+    HANDLE hConsole;
+#endif
 
 int main(int argc, char* argv[])
 {
@@ -47,16 +47,13 @@ int main(int argc, char* argv[])
     // calls and some library functions [to a nonzero value]
     // in the event of an error to indicate what went wrong"
     errno = 0;
+    pid = getpid();
     setprogname(argv[0]);
-    atexit(stop);
 
     // Windows compatible log message [open]
     #if defined(_WIN32) || defined(__WIN32__)
         hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     #endif
-
-    // Thread ID and Attributes
-    pthread_attr_t tattr;
 
     // default to port 8080
     int port = 8080;
@@ -115,32 +112,24 @@ int main(int argc, char* argv[])
 
     // accept connections one at a time
     while (true) {
-        // allocate memory to hold cfd
-        cfd = malloc(sizeof(int));
-        if (cfd == NULL) {
+        // check whether client has connected
+        int cfd = connected();
+        if (cfd == -1) {
             continue;
         }
 
-        // update client connection info
-        checkcfds(false, time(NULL));
+        // Create new subprocess
+        pid_t childProcess = fork();
 
-        // check whether client has connected
-        *cfd = find(connected(), time(NULL));
-        if (*cfd != -1) {
-            pthread_t tid;
-            pthread_attr_init(&tattr);
-            if (pthread_create(&tid, NULL, process, cfd)) {
-                int errsv = errno;
-                fprintf(stderr, "Following error occured while creating thread\n%s", strerror(errsv));
-                error(*cfd, 500);
-                free(cfd);
-                cfd = NULL;
-                continue;
-            }
-            pthread_detach(tid);
-        } else {
-            free(cfd);
-            cfd = NULL;
+        if (childProcess == 0) {
+            // Child process
+            process(cfd);
+        } else if (childProcess < 0) {
+            // Failed
+            int errsv = errno;
+            fprintf(stderr, "Following error occured while creating process:\n\
+%s", strerror(errsv));
+            error(cfd, 500);
         }
     }
 }

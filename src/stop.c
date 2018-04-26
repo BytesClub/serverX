@@ -24,8 +24,6 @@
 
 extern char* root;
 extern int sfd;
-extern int* cfd;
-extern client_t* cfdlist;
 extern bool logger;
 #if defined(_WIN32) || defined(__WIN32__)
     extern HANDLE hConsole;
@@ -42,22 +40,10 @@ void stop(void)
         root = NULL;
     }
 
-    // clear client socket allocated by find
-    if (cfdlist != NULL) {
-        checkcfds(true, (time_t)0);
-        cfdlist = NULL;
-    }
-
     // close server socket
     if (sfd != -1) {
         close(sfd);
         sfd = -1;
-    }
-
-    // clear client socket allocated by main
-    if (cfd != NULL) {
-        free(cfd);
-        cfd = NULL;
     }
 
     // flush output log
@@ -71,4 +57,6 @@ void stop(void)
     #if defined(_WIN32) || defined(__WIN32__)
         CloseHandle(hConsole);
     #endif
+
+    exit(EXIT_SUCCESS);
 }

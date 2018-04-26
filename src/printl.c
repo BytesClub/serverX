@@ -26,10 +26,11 @@ extern bool logger;
 #endif
 
 /**
- * Prints log information into stdout/logfile.
+ * Prepares console for logging
  */
-int printl(const char* module, const char* message, short status) {
-    // initialize logging screen
+static void setConsole(short status) {
+    if (logger)    return;
+
     #if defined(_WIN32) || defined(__WIN32__)
         switch (status) {
             case 1:  SetConsoleTextAttribute(hConsole, 4); break;
@@ -39,25 +40,44 @@ int printl(const char* module, const char* message, short status) {
         }
     #else
         switch (status) {
-            case 1:  if (! logger) printf("\033[31m"); break;
-            case 2:  if (! logger) printf("\033[33m"); break;
-            case 3:  if (! logger) printf("\033[32m"); break;
-            default: if (! logger) printf("\033[34m"); break;
+            case 1:  printf("\033[31m"); break;
+            case 2:  printf("\033[33m"); break;
+            case 3:  printf("\033[32m"); break;
+            default: printf("\033[34m"); break;
         }
     #endif
-    
-    // print message
-    time_t epoch;
-    time(&epoch);
-    int ret = printf("%s%s: %s\n", ctime(&epoch), module, message);
-    
-    // reset to default
+}
+
+/**
+ * Reset console for logging
+ */
+static void resetConsole(void) {
+    if (logger)    return;
+
     #if defined(_WIN32) || defined(__WIN32__)
         SetConsoleTextAttribute(hConsole, 7);
     #else
-        if (! logger) printf("\033[39m\n");
+        printf("\033[39m\n");
     #endif
-    
+
+}
+
+/**
+ * Prints log information into stdout/logfile.
+ */
+int printl(const char* module, const char* message, short status) {
+    // initialize logging screen
+    setConsole(status);
+
+    // print message
+    time_t epoch = time(NULL);
+    char* tstamp = ctime(&epoch);
+    tstamp[strlen(tstamp) - 1] = '\0';
+    int ret = printf("%s: %s: %s", tstamp, module, message);
+
+    // reset to default
+    resetConsole();
+
     // flush the output
     fflush(stdout);
     return ret;
